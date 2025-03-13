@@ -4,11 +4,11 @@
 
 ## **Algos to Implement**
 
-- SimCLR
-- SupCon
-- SimSiam
-- TripletMarginLoss
-- Masked Autoencoder
+- [ ] SimCLR
+- [ ] SupCon
+- [ ] SimSiam
+- [ ] TripletMarginLoss
+- [ ] Masked Autoencoder
 
 ## **Extension**
 
