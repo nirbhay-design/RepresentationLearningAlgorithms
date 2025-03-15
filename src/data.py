@@ -10,7 +10,7 @@ def get_transforms(image_size):
     train_transforms = transforms.Compose([
         transforms.RandomCrop(image_size),
         transforms.RandomApply([transforms.ColorJitter(0.8, 0.8, 0.8, 0.2)], p=0.8),
-        transforms.RandomGrayScale(p = 0.2),
+        transforms.RandomGrayscale(p = 0.2),
         transforms.ToTensor(),
         # transforms.Normalize([0.5,0.5,0.5],[0.5,0.5,0.5])
     ])

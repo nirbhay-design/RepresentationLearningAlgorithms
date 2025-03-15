@@ -1,0 +1,44 @@
+environment: 
+YAML: configs/supcon.c100.yaml
+==> SEED: 42
+==> num_classes: 100
+==> data_name: cifar100
+==> data_params: {'algo': 'supcon', 'data_dir': 'datasets/cifar100', 'batch_size': 1024, 'num_workers': 3, 'image_size': 32}
+==> return_logs: False
+==> eval_every: 10
+==> n_epochs: 200
+==> gpu_id: 0
+==> opt: SGD
+==> opt_params: {'lr': 0.8, 'momentum': 0.9}
+==> schedular_params: {'step_size': 40, 'gamma': 0.1}
+==> mlp_opt: SGD
+==> mlp_opt_params: {'lr': 0.001, 'momentum': 0.9}
+==> model_params: {'model_name': 'resnet50', 'pretrained': True, 'proj_dim': 128}
+==> loss: supcon
+==> loss_params: {'sim': 'cosine', 'tau': 0.1}
+==> distributed: False
+==> train_algo: supcon
+using optimizer: SGD
+using optimizer: SGD
+Files already downloaded and verified
+Files already downloaded and verified
+# of Training Images: 50000
+# of Testing Images: 10000
+[GPU0] Test Accuracy at epoch: 0: 0.016
+[GPU0] epochs: [1/200] train_acc: 0.011 train_loss_con: 6.940 train_loss_sup: 4.641
+[GPU0] epochs: [2/200] train_acc: 0.024 train_loss_con: 6.852 train_loss_sup: 4.547
+[GPU0] epochs: [3/200] train_acc: 0.044 train_loss_con: 6.813 train_loss_sup: 4.398
+[GPU0] epochs: [4/200] train_acc: 0.061 train_loss_con: 6.772 train_loss_sup: 4.283
+[GPU0] epochs: [5/200] train_acc: 0.075 train_loss_con: 6.732 train_loss_sup: 4.190
+[GPU0] epochs: [6/200] train_acc: 0.090 train_loss_con: 6.706 train_loss_sup: 4.117
+[GPU0] epochs: [7/200] train_acc: 0.103 train_loss_con: 6.664 train_loss_sup: 4.030
+[GPU0] epochs: [8/200] train_acc: 0.118 train_loss_con: 6.627 train_loss_sup: 3.949
+[GPU0] epochs: [9/200] train_acc: 0.131 train_loss_con: 6.591 train_loss_sup: 3.877
+[GPU0] epochs: [10/200] train_acc: 0.145 train_loss_con: 6.545 train_loss_sup: 3.792
+[GPU0] Test Accuracy at epoch: 10: 0.171
+[GPU0] epochs: [11/200] train_acc: 0.161 train_loss_con: 6.506 train_loss_sup: 3.723
+[GPU0] epochs: [12/200] train_acc: 0.179 train_loss_con: 6.437 train_loss_sup: 3.635
+[GPU0] epochs: [13/200] train_acc: 0.196 train_loss_con: 6.372 train_loss_sup: 3.555
+[GPU0] epochs: [14/200] train_acc: 0.212 train_loss_con: 6.318 train_loss_sup: 3.488
+[GPU0] epochs: [15/200] train_acc: 0.228 train_loss_con: 6.257 train_loss_sup: 3.418
+[GPU0] epochs: [16/200] train_acc: 0.249 train_loss_con: 6.165 train_loss_sup: 3.324

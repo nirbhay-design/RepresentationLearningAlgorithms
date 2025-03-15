@@ -4,10 +4,10 @@ data_name: cifar100
 data_params:
   algo: supcon
   data_dir: datasets/cifar100
-  batch_size: 256
+  batch_size: 1024
   num_workers: 3
   image_size: 32
-return_logs: True
+return_logs: False
 eval_every: 10
 n_epochs: 200
 gpu_id: 0
