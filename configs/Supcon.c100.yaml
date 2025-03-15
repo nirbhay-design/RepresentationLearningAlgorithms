@@ -7,13 +7,13 @@ data_params:
   batch_size: 256
   num_workers: 3
   image_size: 32
-return_logs: False
-eval_every: 5
-n_epochs: 120
+return_logs: True
+eval_every: 10
+n_epochs: 200
 gpu_id: 0
 opt: SGD
 opt_params:
-  lr: !!float 1e-1
+  lr: !!float 8e-1
   momentum: 0.9
 schedular_params:
   step_size: 40 
@@ -30,5 +30,5 @@ loss: supcon
 loss_params: 
   sim: 'cosine'
   tau: 0.1
-distributed: True
+distributed: False
 train_algo: supcon
