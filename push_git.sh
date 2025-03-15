@@ -10,4 +10,4 @@ commit_msg=$1
 
 git add .
 git commit -m "$commit_msg"
-git push myorigin master
+git push origin master
