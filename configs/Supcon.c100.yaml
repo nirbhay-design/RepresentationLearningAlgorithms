@@ -2,6 +2,7 @@ SEED: 42
 num_classes: 100
 data_name: cifar100
 data_params:
+  algo: supcon
   data_dir: datasets/cifar100
   batch_size: 256
   num_workers: 3

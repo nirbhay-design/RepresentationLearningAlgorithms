@@ -113,6 +113,145 @@ def train_supcon(
 
     return model, tval
 
+def train_simclr(
+        model, mlp, train_loader,
+        test_loader, lossfunction, 
+        optimizer, mlp_optimizer, opt_lr_schedular, 
+        eval_every, n_epochs, device_id, eval_id, return_logs=False): 
+    
+    tval = {'trainacc':[],"trainloss":[]}
+    device = torch.device(f"cuda:{device_id}")
+    model = model.to(device)
+    mlp = mlp.to(device)
+    for epochs in range(n_epochs):
+        model.train()
+        mlp.train()
+        cur_loss = 0
+        curacc = 0
+        cur_mlp_loss = 0
+        len_train = len(train_loader)
+        for idx , (data, data_cap, target) in enumerate(train_loader):
+            data = data.to(device)
+            data_cap = data_cap.to(device)
+            target = target.to(device)
+            
+            feats, proj_feat = model(data)
+            _, proj_feat_cap = model(data_cap)
+            scores = mlp(feats.detach()) # not propagating gradients backward this layer           
+            
+            loss_con, loss_sup = lossfunction(proj_feat, proj_feat_cap, scores, target)
+            
+            optimizer.zero_grad()
+            loss_con.backward()
+            optimizer.step()
+
+            mlp_optimizer.zero_grad()
+            loss_sup.backward()
+            mlp_optimizer.step()
+
+            cur_loss += loss_con.item() / (len_train)
+            cur_mlp_loss += loss_sup.item() / (len_train)
+            scores = F.softmax(scores,dim = 1)
+            _,predicted = torch.max(scores,dim = 1)
+            correct = (predicted == target).sum()
+            samples = scores.shape[0]
+            curacc += correct / (samples * len_train)
+            
+            if return_logs:
+                progress(idx+1,len(train_loader), loss_con=loss_con.item(), loss_sup=loss_sup.item(), GPU = device_id)
+        
+        opt_lr_schedular.step()
+
+        if epochs % eval_every == 0 and device_id == eval_id:
+            cur_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
+            print(f"[GPU{device_id}] Test Accuracy at epoch: {epochs}: {cur_test_acc}")
+      
+        tval['trainacc'].append(float(curacc))
+        tval['trainloss'].append(float(cur_loss))
+        
+        print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_acc: {curacc:.3f} train_loss_con: {cur_loss:.3f} train_loss_sup: {cur_mlp_loss:.3f}")
+    
+    if device_id == eval_id:
+        final_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
+        print(f"[GPU{device_id}] Final Test Accuracy: {final_test_acc}")
+
+    return model, tval
+
+def train_triplet(
+        model, mlp, train_loader,
+        test_loader, lossfunction, 
+        optimizer, mlp_optimizer, opt_lr_schedular, 
+        eval_every, n_epochs, device_id, eval_id, return_logs=False): 
+    
+    tval = {'trainacc':[],"trainloss":[]}
+    device = torch.device(f"cuda:{device_id}")
+    model = model.to(device)
+    mlp = mlp.to(device)
+    for epochs in range(n_epochs):
+        model.train()
+        mlp.train()
+        cur_loss = 0
+        curacc = 0
+        cur_mlp_loss = 0
+        len_train = len(train_loader)
+        for idx , (a, a_t, p, p_t, n, n_t) in enumerate(train_loader):
+            a = a.to(device)
+            p = p.to(device)
+            n = n.to(device)
+
+            a_t = a_t.to(device)
+            p_t = p_t.to(device)
+            n_t = n_t.to(device)
+            
+            af, apf = model(a)
+            pf, ppf = model(p)
+            nf, npf = model(n)
+
+            scores = mlp(af.detach()) # not propagating gradients backward this layer
+            scores_p = mlp(pf.detach())
+            scores_n = mlp(nf.detach())           
+            
+            loss_con, loss_sup = lossfunction(
+                z_a = apf, z_p = ppf, z_n=npf, 
+                s_a=scores, s_p=scores_p, s_n=scores_n, 
+                l_a = a_t, l_p = p_t, l_n = n_t)
+            
+            optimizer.zero_grad()
+            loss_con.backward()
+            optimizer.step()
+
+            mlp_optimizer.zero_grad()
+            loss_sup.backward()
+            mlp_optimizer.step()
+
+            cur_loss += loss_con.item() / (len_train)
+            cur_mlp_loss += loss_sup.item() / (len_train)
+            scores = F.softmax(scores,dim = 1)
+            _,predicted = torch.max(scores,dim = 1)
+            correct = (predicted == a_t).sum()
+            samples = scores.shape[0]
+            curacc += correct / (samples * len_train)
+            
+            if return_logs:
+                progress(idx+1,len(train_loader), loss_con=loss_con.item(), loss_sup=loss_sup.item(), GPU = device_id)
+        
+        opt_lr_schedular.step()
+
+        if epochs % eval_every == 0 and device_id == eval_id:
+            cur_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
+            print(f"[GPU{device_id}] Test Accuracy at epoch: {epochs}: {cur_test_acc}")
+      
+        tval['trainacc'].append(float(curacc))
+        tval['trainloss'].append(float(cur_loss))
+        
+        print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_acc: {curacc:.3f} train_loss_con: {cur_loss:.3f} train_loss_sup: {cur_mlp_loss:.3f}")
+    
+    if device_id == eval_id:
+        final_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
+        print(f"[GPU{device_id}] Final Test Accuracy: {final_test_acc}")
+
+    return model, tval
+
 def loss_function(loss_type = 'supcon', **kwargs):
     if loss_type == "simclr":
         return SimCLRClsLoss(**kwargs)

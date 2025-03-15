@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 from src.network import Network, MLP
-from train_utils import yaml_loader, train_supcon, \
+from train_utils import yaml_loader, train_supcon, train_simclr, train_triplet, \
                         model_optimizer, \
                         loss_function, \
                         load_dataset
@@ -37,6 +37,36 @@ def train_network(
     
     if train_algo == "supcon":
         train_supcon(
+            model,
+            mlp,
+            train_dl,
+            test_dl,
+            loss,
+            optimizer,
+            mlp_optimizer,
+            opt_lr_schedular,
+            eval_every,
+            n_epochs,
+            rank,
+            eval_id,
+            return_logs)
+    elif train_algo == "simclr":
+        train_simclr(
+            model,
+            mlp,
+            train_dl,
+            test_dl,
+            loss,
+            optimizer,
+            mlp_optimizer,
+            opt_lr_schedular,
+            eval_every,
+            n_epochs,
+            rank,
+            eval_id,
+            return_logs)
+    elif train_algo == "triplet":
+        train_triplet(
             model,
             mlp,
             train_dl,
