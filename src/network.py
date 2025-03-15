@@ -3,11 +3,18 @@ import torchvision
 import torch.nn as nn 
 
 class MLP(nn.Module):
-    def __init__(self, in_features, num_classes):
+    def __init__(self, in_features, num_classes, mlp_type="linear"):
         super().__init__()
-        self.mlp = nn.Sequential(
-            nn.Linear(in_features, num_classes)
-        )
+        if mlp_type == "linear":
+            self.mlp = nn.Sequential(
+                nn.Linear(in_features, num_classes)
+            )
+        else:
+            self.mlp = nn.Sequential(
+                nn.Linear(in_features, in_features),
+                nn.ReLU(),
+                nn.Linear(in_features, num_classes)
+            )
 
     def forward(self, x):
         return self.mlp(x)
@@ -36,13 +43,15 @@ class Network(nn.Module):
     def forward(self, x):
         features = self.feat_extractor(x).flatten(1)
         proj_features = self.proj(features)
-        return features, proj_features
+        return features, proj_features # 2048/512, 128 proj
 
 if __name__ == "__main__":
-    network = Network(model_name = 'resnet50', pretrained=False)
+    network = Network(model_name = 'resnet18', pretrained=False)
     mlp = MLP(network.classifier_infeatures, num_classes=10)
     x = torch.rand(2,3,224,224)
     feat, proj_feat = network(x)
     print(feat.shape, proj_feat.shape)
     score = mlp(feat)
     print(score.shape)
+
+    # contrastive loss on proj_feat, representations are feat, MLP on feat 

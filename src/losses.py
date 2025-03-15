@@ -80,7 +80,7 @@ class SupConClsLoss(nn.Module): # combination of SupConLoss with CrossEntropyLos
         self.ce = nn.CrossEntropyLoss()
         self.supcon = SupConLoss(sim = sim, tau = tau)
     
-    def forward(self, features, scores, labels):
+    def forward(self, features, scores, labels): # features: [B, 128], scores: [B, num_classes]
         return self.supcon(features, labels), self.ce(scores, labels)
     
 class TripletMarginLoss(nn.Module):
@@ -100,12 +100,12 @@ class TripletMarginLoss(nn.Module):
 class TripletMarginCELoss(nn.Module):
     def __init__(self, margin = 1.0):
         super().__init__()
-        self.tml = TripletMarginCELoss(margin = margin)
+        self.tml = TripletMarginLoss(margin = margin)
         self.ce = nn.CrossEntropyLoss()
 
-    def forward(self, z_a, z_p, z_n, l_a, l_p, l_n):
+    def forward(self, z_a, z_p, z_n, s_a, s_p, s_n, l_a, l_p, l_n):
         tml = self.tml(z_a, z_p, z_n)
-        ce = self.ce(z_a, l_a) + self.ce(z_p, l_p) + self.ce(z_n, l_n)
+        ce = self.ce(s_a, l_a) + self.ce(s_p, l_p) + self.ce(s_n, l_n)
         return tml, ce
     
 class SimCLR(nn.Module):
@@ -125,7 +125,6 @@ class SimCLR(nn.Module):
 
         return self.supcon(x_full, fake_labels)
 
-
 class SimCLRClsLoss(nn.Module): 
     def __init__(self, sim = 'cosine', tau = 1.0):
         super().__init__()
@@ -138,22 +137,19 @@ class SimCLRClsLoss(nn.Module):
         return self.simclr(features, features_cap), self.ce(scores, labels)
 
 if __name__ == "__main__":
-    scl = SupConLoss()
-    tml = TripletMarginLoss()
-    sclr = SimCLR()
+    scl = SupConClsLoss()
+    tml = TripletMarginCELoss()
+    sclr = SimCLRClsLoss()
 
     features = torch.rand(10,5)
+    features_cap = torch.rand(10,5)
+    features_p = torch.rand(10,5)
+    features_n = torch.rand(10,5)
+    scores_p = torch.rand(10,3)
+    scores_n = torch.rand(10,3)
+    scores = torch.rand(10,3)
     labels = torch.randint(low = 0, high = 2, size = (10,))
 
-    # print(labels)
-    # print(features)
-
-
-    # print(scl(features, labels))
-
-    # a = torch.rand(10,5)
-    # p = torch.rand(10,5)
-    # n = torch.rand(10,5)
-
-    # print(tml(a,p,n))
-
+    print(scl(features, scores, labels))
+    print(sclr(features, features_cap, scores, labels))
+    print(tml(features, features_p, features_n, scores, scores_p, scores_n, labels, labels, labels))

@@ -22,7 +22,7 @@ mlp_opt_params:
   lr: !!float 1e-3
   momentum: 0.9
 model_params:
-  model_name: 'resnet18' 
+  model_name: 'resnet50' 
   pretrained: True 
   proj_dim: 128
 loss: supcon
@@ -30,4 +30,4 @@ loss_params:
   sim: 'cosine'
   tau: 0.1
 distributed: True
-train_whole: True
+train_algo: supcon

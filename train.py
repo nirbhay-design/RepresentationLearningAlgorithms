@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 from src.network import Network, MLP
-from train_utils import yaml_loader, train, train_whole, \
+from train_utils import yaml_loader, train_supcon, \
                         model_optimizer, \
                         loss_function, \
                         load_dataset
@@ -19,6 +19,38 @@ def ddp_setup(rank, world_size):
     os.environ['MASTER_PORT'] = "4084"
     init_process_group(backend = 'nccl', rank = rank, world_size = world_size)
 
+def train_network(
+        train_algo,
+        model,
+        mlp,
+        train_dl,
+        test_dl,
+        loss,
+        optimizer,
+        mlp_optimizer,
+        opt_lr_schedular,
+        eval_every,
+        n_epochs,
+        rank,
+        eval_id,
+        return_logs):
+    
+    if train_algo == "supcon":
+        train_supcon(
+            model,
+            mlp,
+            train_dl,
+            test_dl,
+            loss,
+            optimizer,
+            mlp_optimizer,
+            opt_lr_schedular,
+            eval_every,
+            n_epochs,
+            rank,
+            eval_id,
+            return_logs)
+    
 def main_dist(rank, world_size, config):
 
     ddp_setup(rank, world_size)
@@ -55,38 +87,23 @@ def main_dist(rank, world_size, config):
 
     eval_id = 0
     
-    if config['train_whole']:
-        train_whole(
-            model,
-            mlp,
-            train_dl,
-            test_dl,
-            loss,
-            optimizer,
-            mlp_optimizer,
-            opt_lr_schedular,
-            eval_every,
-            n_epochs,
-            rank,
-            eval_id,
-            return_logs
-        )
-    else:
-        train(
-            model,
-            mlp,
-            train_dl,
-            test_dl,
-            loss,
-            optimizer,
-            mlp_optimizer,
-            opt_lr_schedular,
-            eval_every,
-            n_epochs,
-            rank,
-            eval_id,
-            return_logs
-        )
+    
+    train_network(
+        config['train_algo'],
+        model,
+        mlp,
+        train_dl,
+        test_dl,
+        loss,
+        optimizer,
+        mlp_optimizer,
+        opt_lr_schedular,
+        eval_every,
+        n_epochs,
+        rank,
+        eval_id,
+        return_logs
+    )
 
     destroy_process_group()
 
@@ -115,38 +132,22 @@ def main_single():
     n_epochs = config['n_epochs']
     device = config['gpu_id']
 
-    if config['train_whole']:
-        train_whole(
-            model,
-            mlp,
-            train_dl,
-            test_dl,
-            loss,
-            optimizer,
-            mlp_optimizer,
-            opt_lr_schedular,
-            eval_every,
-            n_epochs,
-            device,
-            device,
-            return_logs
-        )
-    else:
-        train(
-            model,
-            mlp,
-            train_dl,
-            test_dl,
-            loss,
-            optimizer,
-            mlp_optimizer,
-            opt_lr_schedular,
-            eval_every,
-            n_epochs,
-            device,
-            device,
-            return_logs
-        )
+    train_network(
+        config['train_algo'],
+        model,
+        mlp,
+        train_dl,
+        test_dl,
+        loss,
+        optimizer,
+        mlp_optimizer,
+        opt_lr_schedular,
+        eval_every,
+        n_epochs,
+        device,
+        device,
+        return_logs
+    )
 
 if __name__ == "__main__":
     config = yaml_loader(sys.argv[1])
