@@ -1,0 +1,33 @@
+SEED: 42
+num_classes: 100
+data_name: cifar100
+data_params:
+  data_dir: datasets/cifar100
+  batch_size: 256
+  num_workers: 3
+  image_size: 32
+return_logs: False
+eval_every: 5
+n_epochs: 120
+gpu_id: 0
+opt: SGD
+opt_params:
+  lr: !!float 1e-1
+  momentum: 0.9
+schedular_params:
+  step_size: 40 
+  gamma: 0.1
+mlp_opt: SGD
+mlp_opt_params:
+  lr: !!float 1e-3
+  momentum: 0.9
+model_params:
+  model_name: 'resnet18' 
+  pretrained: True 
+  proj_dim: 128
+loss: supcon
+loss_params: 
+  sim: 'cosine'
+  tau: 0.1
+distributed: True
+train_whole: True

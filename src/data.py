@@ -2,7 +2,6 @@ import torch
 import torchvision 
 import torchvision.transforms as transforms
 import os 
-from src.dataset.tree import load_distances
 from PIL import Image
 import pickle 
 from torch.utils.data.distributed import DistributedSampler

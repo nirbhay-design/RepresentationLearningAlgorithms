@@ -1,0 +1,10 @@
+datasets/
+
+.ipynb_checkpoints/
+__pycache__
+
+*.pt 
+*.pth 
+*.zip
+*.tar.gz 
+*.ckpt 
