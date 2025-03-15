@@ -4,10 +4,10 @@
 
 ## **Algos to Implement**
 
-- [ ] SimCLR
-- [ ] SupCon
+- [x] SimCLR
+- [x] SupCon
 - [ ] SimSiam
-- [ ] TripletMarginLoss
+- [x] TripletMarginLoss
 - [ ] Masked Autoencoder
 
 ## **Extension**

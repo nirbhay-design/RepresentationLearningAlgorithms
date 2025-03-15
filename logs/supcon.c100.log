@@ -42,3 +42,10 @@ Files already downloaded and verified
 [GPU0] epochs: [14/200] train_acc: 0.212 train_loss_con: 6.318 train_loss_sup: 3.488
 [GPU0] epochs: [15/200] train_acc: 0.228 train_loss_con: 6.257 train_loss_sup: 3.418
 [GPU0] epochs: [16/200] train_acc: 0.249 train_loss_con: 6.165 train_loss_sup: 3.324
+[GPU0] epochs: [17/200] train_acc: 0.266 train_loss_con: 6.106 train_loss_sup: 3.255
+[GPU0] epochs: [18/200] train_acc: 0.282 train_loss_con: 6.027 train_loss_sup: 3.176
+[GPU0] epochs: [19/200] train_acc: 0.298 train_loss_con: 5.955 train_loss_sup: 3.118
+[GPU0] epochs: [20/200] train_acc: 0.314 train_loss_con: 5.884 train_loss_sup: 3.054
+[GPU0] Test Accuracy at epoch: 20: 0.22
+[GPU0] epochs: [21/200] train_acc: 0.329 train_loss_con: 5.799 train_loss_sup: 2.992
+[GPU0] epochs: [22/200] train_acc: 0.346 train_loss_con: 5.728 train_loss_sup: 2.947
