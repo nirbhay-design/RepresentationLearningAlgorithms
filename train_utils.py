@@ -250,6 +250,7 @@ def train_triplet(
     return model, tval
 
 def loss_function(loss_type = 'supcon', **kwargs):
+    print(f"loss function: {loss_type}")
     if loss_type == "simclr":
         return SimCLRClsLoss(**kwargs)
     elif loss_type == 'supcon':
