@@ -27,6 +27,6 @@ Files already downloaded and verified
 Files already downloaded and verified
 # of Training Images: 50000
 # of Testing Images: 10000
-[GPU1] Test Accuracy at epoch: 0: 0.112
+[GPU1] Test Accuracy at epoch: 0: 0.106
 [GPU1] epochs: [1/300] train_acc: 0.100 train_loss_con: 7.625 train_loss_sup: 2.303
-[GPU1] epochs: [2/300] train_acc: 0.122 train_loss_con: 7.604 train_loss_sup: 2.302
+[GPU1] epochs: [2/300] train_acc: 0.124 train_loss_con: 7.598 train_loss_sup: 2.302

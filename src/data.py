@@ -127,7 +127,7 @@ def Cifar10DataLoader(**kwargs):
     data_dir = kwargs['data_dir']
     algo = kwargs['algo']
 
-    train_transforms, test_transforms = get_transforms(image_size, data_name = 'cifar100')
+    train_transforms, test_transforms = get_transforms(image_size, data_name = 'cifar10')
 
     distributed = kwargs['distributed']
     num_workers = kwargs['num_workers']
