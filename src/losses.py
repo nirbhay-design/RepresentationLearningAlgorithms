@@ -80,8 +80,11 @@ class SupConClsLoss(nn.Module): # combination of SupConLoss with CrossEntropyLos
         self.ce = nn.CrossEntropyLoss()
         self.supcon = SupConLoss(sim = sim, tau = tau)
     
-    def forward(self, features, scores, labels): # features: [B, 128], scores: [B, num_classes]
-        return self.supcon(features, labels), self.ce(scores, labels)
+    def forward(self, features, features_cap, scores, labels): # features: [B, 128], scores: [B, num_classes]
+        x_full = torch.cat([features,features_cap], dim = 0)
+        label_full = torch.cat([labels, labels])
+        
+        return self.supcon(x_full, label_full), self.ce(scores, labels)
     
 class TripletMarginLoss(nn.Module):
     def __init__(self, margin = 1.0):
@@ -103,9 +106,9 @@ class TripletMarginCELoss(nn.Module):
         self.tml = TripletMarginLoss(margin = margin)
         self.ce = nn.CrossEntropyLoss()
 
-    def forward(self, z_a, z_p, z_n, s_a, s_p, s_n, l_a, l_p, l_n):
+    def forward(self, z_a, z_p, z_n, s_a, l_a):
         tml = self.tml(z_a, z_p, z_n)
-        ce = self.ce(s_a, l_a) + self.ce(s_p, l_p) + self.ce(s_n, l_n)
+        ce = self.ce(s_a, l_a)
         return tml, ce
     
 class SimCLR(nn.Module):
@@ -150,6 +153,6 @@ if __name__ == "__main__":
     scores = torch.rand(10,3)
     labels = torch.randint(low = 0, high = 2, size = (10,))
 
-    print(scl(features, scores, labels))
+    print(scl(features, features_cap, scores, labels))
     print(sclr(features, features_cap, scores, labels))
-    print(tml(features, features_p, features_n, scores, scores_p, scores_n, labels, labels, labels))
+    print(tml(features, features_p, features_n, scores, labels))

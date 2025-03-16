@@ -86,7 +86,7 @@ def main_dist(rank, world_size, config):
     ddp_setup(rank, world_size)
 
     model = Network(**config['model_params'])
-    mlp = MLP(model.classifier_infeatures, config['num_classes'])
+    mlp = MLP(model.classifier_infeatures, config['num_classes'], config['mlp_type'])
     print(f"############################# RANK: {rank} #############################")
     model = model.to(rank)
     mlp = mlp.to(rank)
@@ -97,7 +97,7 @@ def main_dist(rank, world_size, config):
     optimizer = model_optimizer(model, config['opt'], **config['opt_params'])
     mlp_optimizer = model_optimizer(mlp, config['mlp_opt'], **config['mlp_opt_params'])
 
-    opt_lr_schedular = optim.lr_scheduler.StepLR(optimizer, **config['schedular_params'])
+    opt_lr_schedular = optim.lr_scheduler.CosineAnnealingLR(optimizer, **config['schedular_params'])
 
     loss = loss_function(loss_type = config['loss'], **config.get('loss_params', {}))
     
@@ -139,12 +139,12 @@ def main_dist(rank, world_size, config):
 
 def main_single():
     model = Network(**config['model_params'])
-    mlp = MLP(model.classifier_infeatures, config['num_classes'])
+    mlp = MLP(model.classifier_infeatures, config['num_classes'], config['mlp_type'])
 
     optimizer = model_optimizer(model, config['opt'], **config['opt_params'])
     mlp_optimizer = model_optimizer(mlp, config['mlp_opt'], **config['mlp_opt_params'])
 
-    opt_lr_schedular = optim.lr_scheduler.StepLR(optimizer, **config['schedular_params'])
+    opt_lr_schedular = optim.lr_scheduler.CosineAnnealingLR(optimizer, **config['schedular_params'])
 
     loss = loss_function(loss_type = config['loss'], **config.get('loss_params', {}))
     
@@ -195,6 +195,8 @@ if __name__ == "__main__":
     print(f"YAML: {sys.argv[1]}")
     for key, value in config.items():
         print(f"==> {key}: {value}")
+
+    print("-"*50)
 
     distributed = config['distributed']
 

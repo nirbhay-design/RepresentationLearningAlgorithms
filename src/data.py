@@ -6,19 +6,26 @@ from PIL import Image
 import pickle 
 from torch.utils.data.distributed import DistributedSampler
 
-def get_transforms(image_size):
+def get_transforms(image_size, data_name = "cifar10"):
+    if data_name == 'cifar10':
+        mean = (0.4914, 0.4822, 0.4465)
+        std = (0.2023, 0.1994, 0.2010)
+    elif data_name == 'cifar100':
+        mean = (0.5071, 0.4867, 0.4408)
+        std = (0.2675, 0.2565, 0.2761)
+
     train_transforms = transforms.Compose([
         transforms.RandomCrop(image_size),
         transforms.RandomApply([transforms.ColorJitter(0.8, 0.8, 0.8, 0.2)], p=0.8),
         transforms.RandomGrayscale(p = 0.2),
         transforms.ToTensor(),
-        # transforms.Normalize([0.5,0.5,0.5],[0.5,0.5,0.5])
+        transforms.Normalize(mean = mean, std = std)
     ])
 
     test_transforms = transforms.Compose([
         transforms.Resize(image_size),
         transforms.ToTensor(),
-        # transforms.Normalize([0.5,0.5,0.5], [0.5,0.5,0.5])
+        transforms.Normalize(mean = mean, std = std)
     ])
 
     return train_transforms, test_transforms
@@ -67,7 +74,7 @@ class DataCifar():
             
         image, label = self.data[idx]
 
-        if self.algo == "simclr":
+        if self.algo == "simclr" or self.algo == "supcon":
             img1 = self.target_transform(image)
             img2 = self.target_transform(image)
             return img1, img2, label 
@@ -80,7 +87,7 @@ def Cifar100DataLoader(**kwargs):
     data_dir = kwargs['data_dir']
     algo = kwargs['algo']
 
-    train_transforms, test_transforms = get_transforms(image_size)
+    train_transforms, test_transforms = get_transforms(image_size, data_name = "cifar100")
 
     distributed = kwargs['distributed']
     num_workers = kwargs['num_workers']
@@ -120,7 +127,7 @@ def Cifar10DataLoader(**kwargs):
     data_dir = kwargs['data_dir']
     algo = kwargs['algo']
 
-    train_transforms, test_transforms = get_transforms(image_size)
+    train_transforms, test_transforms = get_transforms(image_size, data_name = 'cifar100')
 
     distributed = kwargs['distributed']
     num_workers = kwargs['num_workers']

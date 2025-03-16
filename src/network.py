@@ -6,10 +6,12 @@ class MLP(nn.Module):
     def __init__(self, in_features, num_classes, mlp_type="linear"):
         super().__init__()
         if mlp_type == "linear":
+            print("===> using linear mlp")
             self.mlp = nn.Sequential(
                 nn.Linear(in_features, num_classes)
             )
         else:
+            print("===> using hiddin mlp")
             self.mlp = nn.Sequential(
                 nn.Linear(in_features, in_features),
                 nn.ReLU(),
@@ -43,6 +45,8 @@ class Network(nn.Module):
     def forward(self, x):
         features = self.feat_extractor(x).flatten(1)
         proj_features = self.proj(features)
+        features = nn.functional.normalize(features, dim = -1)
+        proj_features = nn.functional.normalize(proj_features, dim = -1)
         return features, proj_features # 2048/512, 128 proj
 
 if __name__ == "__main__":

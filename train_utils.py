@@ -68,14 +68,16 @@ def train_supcon(
         curacc = 0
         cur_mlp_loss = 0
         len_train = len(train_loader)
-        for idx , (data,target) in enumerate(train_loader):
+        for idx , (data, data_cap, target) in enumerate(train_loader):
             data = data.to(device)
+            data_cap = data_cap.to(device)
             target = target.to(device)
             
             feats, proj_feat = model(data)
+            feats_cap, proj_feat_cap = model(data_cap)
             scores = mlp(feats.detach()) # not propagating gradients backward this layer           
             
-            loss_con, loss_sup = lossfunction(proj_feat, scores, target)
+            loss_con, loss_sup = lossfunction(proj_feat, proj_feat_cap, scores, target)
             
             optimizer.zero_grad()
             loss_con.backward()
@@ -200,21 +202,16 @@ def train_triplet(
             n = n.to(device)
 
             a_t = a_t.to(device)
-            p_t = p_t.to(device)
-            n_t = n_t.to(device)
             
             af, apf = model(a)
             pf, ppf = model(p)
             nf, npf = model(n)
 
             scores = mlp(af.detach()) # not propagating gradients backward this layer
-            scores_p = mlp(pf.detach())
-            scores_n = mlp(nf.detach())           
             
             loss_con, loss_sup = lossfunction(
                 z_a = apf, z_p = ppf, z_n=npf, 
-                s_a=scores, s_p=scores_p, s_n=scores_n, 
-                l_a = a_t, l_p = p_t, l_n = n_t)
+                s_a=scores, l_a = a_t)
             
             optimizer.zero_grad()
             loss_con.backward()
