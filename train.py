@@ -31,6 +31,7 @@ def train_network(
         opt_lr_schedular,
         eval_every,
         n_epochs,
+        n_epochs_mlp,
         rank,
         eval_id,
         return_logs):
@@ -47,6 +48,7 @@ def train_network(
             opt_lr_schedular,
             eval_every,
             n_epochs,
+            n_epochs_mlp,
             rank,
             eval_id,
             return_logs)
@@ -62,6 +64,7 @@ def train_network(
             opt_lr_schedular,
             eval_every,
             n_epochs,
+            n_epochs_mlp,
             rank,
             eval_id,
             return_logs)
@@ -77,6 +80,7 @@ def train_network(
             opt_lr_schedular,
             eval_every,
             n_epochs,
+            n_epochs_mlp,
             rank,
             eval_id,
             return_logs)
@@ -114,6 +118,7 @@ def main_dist(rank, world_size, config):
     return_logs = config['return_logs']
     eval_every = config['eval_every']
     n_epochs = config['n_epochs']
+    n_epochs_mlp = config['n_epochs_mlp']
 
     eval_id = 0
     
@@ -130,6 +135,7 @@ def main_dist(rank, world_size, config):
         opt_lr_schedular,
         eval_every,
         n_epochs,
+        n_epochs_mlp,
         rank,
         eval_id,
         return_logs
@@ -160,6 +166,7 @@ def main_single():
     return_logs = config['return_logs']
     eval_every = config['eval_every']
     n_epochs = config['n_epochs']
+    n_epochs_mlp = config['n_epochs_mlp']
     device = config['gpu_id']
 
     train_network(
@@ -174,6 +181,7 @@ def main_single():
         opt_lr_schedular,
         eval_every,
         n_epochs,
+        n_epochs_mlp,
         device,
         device,
         return_logs
