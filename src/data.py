@@ -13,22 +13,28 @@ def get_transforms(image_size, data_name = "cifar10"):
     elif data_name == 'cifar100':
         mean = (0.5071, 0.4867, 0.4408)
         std = (0.2675, 0.2565, 0.2761)
+    
+    s = 0.5
 
     train_transforms = transforms.Compose([
-        transforms.RandomCrop(image_size),
-        transforms.RandomApply([transforms.ColorJitter(0.8, 0.8, 0.8, 0.2)], p=0.8),
+        transforms.RandomResizedCrop(image_size),
+        transforms.RandomHorizontalFlip(p=0.5),
+        transforms.RandomApply([transforms.ColorJitter(0.8*s, 0.8*s, 0.8*s, 0.2*s)], p=0.8),
         transforms.RandomGrayscale(p = 0.2),
         transforms.ToTensor(),
-        transforms.Normalize(mean = mean, std = std)
+        # transforms.Normalize(mean = mean, std = std)
     ])
+
+    train_transforms_mlp = transforms.Compose([transforms.RandomResizedCrop(image_size),
+                                          transforms.RandomHorizontalFlip(p=0.5),
+                                          transforms.ToTensor()])
 
     test_transforms = transforms.Compose([
-        transforms.Resize(image_size),
-        transforms.ToTensor(),
-        transforms.Normalize(mean = mean, std = std)
+        transforms.ToTensor()
+        # transforms.Normalize(mean = mean, std = std)
     ])
 
-    return train_transforms, test_transforms
+    return train_transforms, train_transforms_mlp, test_transforms
 
 class DataCifar():
     def __init__(self, algo = "supcon", data_name = "cifar10", data_dir = "datasets/cifar10", target_transform = transforms.ToTensor()):
@@ -87,7 +93,7 @@ def Cifar100DataLoader(**kwargs):
     data_dir = kwargs['data_dir']
     algo = kwargs['algo']
 
-    train_transforms, test_transforms = get_transforms(image_size, data_name = "cifar100")
+    train_transforms, train_transforms_mlp, test_transforms = get_transforms(image_size, data_name = "cifar100")
 
     distributed = kwargs['distributed']
     num_workers = kwargs['num_workers']
@@ -95,6 +101,13 @@ def Cifar100DataLoader(**kwargs):
     train_dataset = DataCifar(
         algo = algo, data_name = "cifar100", 
         data_dir = data_dir, target_transform = train_transforms)
+
+    train_dataset_mlp = torchvision.datasets.CIFAR100(
+        data_dir,
+        transform = train_transforms_mlp,
+        train = True,
+        download = True
+    )
     
     test_dataset = torchvision.datasets.CIFAR100(
         data_dir, 
@@ -112,6 +125,15 @@ def Cifar100DataLoader(**kwargs):
         sampler = DistributedSampler(train_dataset) if distributed else None 
     )
 
+    train_dl_mlp = torch.utils.data.DataLoader(
+        train_dataset_mlp,
+        batch_size = kwargs['batch_size'],
+        shuffle=False if distributed else True,
+        pin_memory=True,
+        num_workers = num_workers,
+        sampler = DistributedSampler(train_dataset_mlp) if distributed else None 
+    )
+
     test_dl = torch.utils.data.DataLoader(
         test_dataset,
         batch_size = 32,
@@ -120,14 +142,14 @@ def Cifar100DataLoader(**kwargs):
         num_workers= num_workers
     )
 
-    return train_dl, test_dl, train_dataset, test_dataset
+    return train_dl, train_dl_mlp, test_dl, train_dataset, test_dataset
 
 def Cifar10DataLoader(**kwargs):
     image_size = kwargs['image_size']
     data_dir = kwargs['data_dir']
     algo = kwargs['algo']
 
-    train_transforms, test_transforms = get_transforms(image_size, data_name = 'cifar10')
+    train_transforms, train_transforms_mlp, test_transforms = get_transforms(image_size, data_name = "cifar10")
 
     distributed = kwargs['distributed']
     num_workers = kwargs['num_workers']
@@ -135,6 +157,13 @@ def Cifar10DataLoader(**kwargs):
     train_dataset = DataCifar(
         algo = algo, data_name = "cifar10", 
         data_dir = data_dir, target_transform = train_transforms)
+
+    train_dataset_mlp = torchvision.datasets.CIFAR10(
+        data_dir,
+        transform = train_transforms_mlp,
+        train = True,
+        download = True
+    )
     
     test_dataset = torchvision.datasets.CIFAR10(
         data_dir, 
@@ -152,6 +181,15 @@ def Cifar10DataLoader(**kwargs):
         sampler = DistributedSampler(train_dataset) if distributed else None 
     )
 
+    train_dl_mlp = torch.utils.data.DataLoader(
+        train_dataset_mlp,
+        batch_size = kwargs['batch_size'],
+        shuffle=False if distributed else True,
+        pin_memory=True,
+        num_workers = num_workers,
+        sampler = DistributedSampler(train_dataset_mlp) if distributed else None 
+    )
+
     test_dl = torch.utils.data.DataLoader(
         test_dataset,
         batch_size = 32,
@@ -160,4 +198,4 @@ def Cifar10DataLoader(**kwargs):
         num_workers= num_workers
     )
 
-    return train_dl, test_dl, train_dataset, test_dataset
+    return train_dl, train_dl_mlp, test_dl, train_dataset, test_dataset

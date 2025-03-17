@@ -36,8 +36,15 @@ class Network(nn.Module):
         module_keys = list(model._modules.keys())
         self.feat_extractor = nn.Sequential()
         for key in module_keys[:-1]:
+            if key == "maxpool": # don't add maxpool layer
+                continue
             module_key = model._modules.get(key, nn.Identity())
             self.feat_extractor.add_module(key, module_key)
+
+        if not pretrained:
+            in_feat = self.feat_extractor.conv1.in_channels
+            out_feat = self.feat_extractor.conv1.out_channels
+            self.feat_extractor.conv1 = nn.Conv2d(in_feat, out_feat, kernel_size=3, stride=1, bias=False)
 
         self.classifier_infeatures = model._modules.get(module_keys[-1], nn.Identity()).in_features
         self.proj = nn.Linear(self.classifier_infeatures, proj_dim)
@@ -45,17 +52,17 @@ class Network(nn.Module):
     def forward(self, x):
         features = self.feat_extractor(x).flatten(1)
         proj_features = self.proj(features)
-        features = nn.functional.normalize(features, dim = -1)
-        proj_features = nn.functional.normalize(proj_features, dim = -1)
         return features, proj_features # 2048/512, 128 proj
 
 if __name__ == "__main__":
-    network = Network(model_name = 'resnet18', pretrained=False)
-    mlp = MLP(network.classifier_infeatures, num_classes=10)
+    network = Network(model_name = 'resnet50', pretrained=False)
+    mlp = MLP(network.classifier_infeatures, num_classes=10, mlp_type='hidden')
     x = torch.rand(2,3,224,224)
     feat, proj_feat = network(x)
     print(feat.shape, proj_feat.shape)
     score = mlp(feat)
     print(score.shape)
+
+    # print(network)
 
     # contrastive loss on proj_feat, representations are feat, MLP on feat 

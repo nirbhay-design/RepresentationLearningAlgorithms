@@ -34,7 +34,6 @@ def evaluate(model, mlp, loader, device, return_logs=False):
         for idx,(x,y) in enumerate(loader):
             x = x.to(device)
             y = y.to(device)
-            # model = model.to(config.device)
 
             feats, _ = model(x)
             scores = mlp(feats)
@@ -51,212 +50,167 @@ def evaluate(model, mlp, loader, device, return_logs=False):
         accuracy = round(float(correct / samples), 3)
     return accuracy 
 
-def train_supcon(
-        model, mlp, train_loader,
-        test_loader, lossfunction, 
-        optimizer, mlp_optimizer, opt_lr_schedular, 
-        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
-    
+def train_mlp(
+    model, mlp, train_loader, test_loader, 
+    lossfunction, mlp_optimizer, n_epochs, eval_every,
+    device_id, eval_id, return_logs=False):
+
     tval = {'trainacc':[],"trainloss":[]}
     device = torch.device(f"cuda:{device_id}")
     model = model.to(device)
     mlp = mlp.to(device)
     for epochs in range(n_epochs):
-        model.train()
+        model.eval()
         mlp.train()
-        cur_loss = 0
         curacc = 0
         cur_mlp_loss = 0
+        len_train = len(train_loader)
+        for idx , (data, target) in enumerate(train_loader):
+            data = data.to(device)
+            target = target.to(device)
+            
+            with torch.no_grad():
+                feats, proj_feat = model(data)
+            scores = mlp(feats.detach())      
+            
+            loss_sup = lossfunction(scores, target)
+
+            mlp_optimizer.zero_grad()
+            loss_sup.backward()
+            mlp_optimizer.step()
+
+            cur_mlp_loss += loss_sup.item() / (len_train)
+            scores = F.softmax(scores,dim = 1)
+            _,predicted = torch.max(scores,dim = 1)
+            correct = (predicted == target).sum()
+            samples = scores.shape[0]
+            curacc += correct / (samples * len_train)
+            
+            if return_logs:
+                progress(idx+1,len(train_loader), loss_sup=loss_sup.item(), GPU = device_id)
+        
+        if epochs % eval_every == 0 and device_id == eval_id:
+            cur_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
+            print(f"[GPU{device_id}] Test Accuracy at epoch: {epochs}: {cur_test_acc}")
+      
+        tval['trainacc'].append(float(curacc))
+        tval['trainloss'].append(float(cur_mlp_loss))
+        
+        print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_acc: {curacc:.3f} train_loss_sup: {cur_mlp_loss:.3f}")
+    
+    if device_id == eval_id:
+        final_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
+        print(f"[GPU{device_id}] Final Test Accuracy: {final_test_acc}")
+
+    return mlp, tval
+
+def train_supcon(
+        train_algo, model, mlp, train_loader, train_loader_mlp,
+        test_loader, lossfunction, lossfunction_mlp, 
+        optimizer, mlp_optimizer, opt_lr_schedular, 
+        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
+    
+
+    print(f"### {train_algo} Training begins")
+    device = torch.device(f"cuda:{device_id}")
+    model = model.to(device)
+    for epochs in range(n_epochs):
+        model.train()
+        cur_loss = 0
         len_train = len(train_loader)
         for idx , (data, data_cap, target) in enumerate(train_loader):
             data = data.to(device)
             data_cap = data_cap.to(device)
-            target = target.to(device)
+            if train_algo == "supcon":
+                target = target.to(device)
             
             feats, proj_feat = model(data)
             feats_cap, proj_feat_cap = model(data_cap)
-            scores = mlp(feats.detach()) # not propagating gradients backward this layer           
             
-            loss_con, loss_sup = lossfunction(proj_feat, proj_feat_cap, scores, target)
-            
-            optimizer.zero_grad()
-            loss_con.backward()
-            optimizer.step()
-
-            mlp_optimizer.zero_grad()
-            loss_sup.backward()
-            mlp_optimizer.step()
-
-            cur_loss += loss_con.item() / (len_train)
-            cur_mlp_loss += loss_sup.item() / (len_train)
-            scores = F.softmax(scores,dim = 1)
-            _,predicted = torch.max(scores,dim = 1)
-            correct = (predicted == target).sum()
-            samples = scores.shape[0]
-            curacc += correct / (samples * len_train)
-            
-            if return_logs:
-                progress(idx+1,len(train_loader), loss_con=loss_con.item(), loss_sup=loss_sup.item(), GPU = device_id)
-        
-        opt_lr_schedular.step()
-
-        if epochs % eval_every == 0 and device_id == eval_id:
-            cur_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
-            print(f"[GPU{device_id}] Test Accuracy at epoch: {epochs}: {cur_test_acc}")
-      
-        tval['trainacc'].append(float(curacc))
-        tval['trainloss'].append(float(cur_loss))
-        
-        print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_acc: {curacc:.3f} train_loss_con: {cur_loss:.3f} train_loss_sup: {cur_mlp_loss:.3f}")
-    
-    if device_id == eval_id:
-        final_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
-        print(f"[GPU{device_id}] Final Test Accuracy: {final_test_acc}")
-
-    return model, tval
-
-def train_simclr(
-        model, mlp, train_loader,
-        test_loader, lossfunction, 
-        optimizer, mlp_optimizer, opt_lr_schedular, 
-        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
-    
-    tval = {'trainacc':[],"trainloss":[]}
-    device = torch.device(f"cuda:{device_id}")
-    model = model.to(device)
-    mlp = mlp.to(device)
-    for epochs in range(n_epochs):
-        model.train()
-        mlp.train()
-        cur_loss = 0
-        curacc = 0
-        cur_mlp_loss = 0
-        len_train = len(train_loader)
-        for idx , (data, data_cap, target) in enumerate(train_loader):
-            data = data.to(device)
-            data_cap = data_cap.to(device)
-            target = target.to(device)
-            
-            feats, proj_feat = model(data)
-            _, proj_feat_cap = model(data_cap)
-            scores = mlp(feats.detach()) # not propagating gradients backward this layer           
-            
-            loss_con, loss_sup = lossfunction(proj_feat, proj_feat_cap, scores, target)
+            if train_algo == "supcon":
+                loss_con = lossfunction(proj_feat, proj_feat_cap, target)
+            else:
+                loss_con = lossfunction(proj_feat, proj_feat_cap)
             
             optimizer.zero_grad()
             loss_con.backward()
             optimizer.step()
 
-            mlp_optimizer.zero_grad()
-            loss_sup.backward()
-            mlp_optimizer.step()
-
             cur_loss += loss_con.item() / (len_train)
-            cur_mlp_loss += loss_sup.item() / (len_train)
-            scores = F.softmax(scores,dim = 1)
-            _,predicted = torch.max(scores,dim = 1)
-            correct = (predicted == target).sum()
-            samples = scores.shape[0]
-            curacc += correct / (samples * len_train)
             
             if return_logs:
-                progress(idx+1,len(train_loader), loss_con=loss_con.item(), loss_sup=loss_sup.item(), GPU = device_id)
+                progress(idx+1,len(train_loader), loss_con=loss_con.item(), GPU = device_id)
         
         opt_lr_schedular.step()
+            
+        print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
 
-        if epochs % eval_every == 0 and device_id == eval_id:
-            cur_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
-            print(f"[GPU{device_id}] Test Accuracy at epoch: {epochs}: {cur_test_acc}")
-      
-        tval['trainacc'].append(float(curacc))
-        tval['trainloss'].append(float(cur_loss))
-        
-        print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_acc: {curacc:.3f} train_loss_con: {cur_loss:.3f} train_loss_sup: {cur_mlp_loss:.3f}")
-    
-    if device_id == eval_id:
-        final_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
-        print(f"[GPU{device_id}] Final Test Accuracy: {final_test_acc}")
+    print("### MLP training begins")
 
-    return model, tval
+    train_mlp(
+        model, mlp, train_loader_mlp, test_loader, 
+        lossfunction_mlp, mlp_optimizer, n_epochs_mlp, eval_every,
+        device_id, eval_id, return_logs = return_logs)
+
+    return model
 
 def train_triplet(
-        model, mlp, train_loader,
-        test_loader, lossfunction, 
+        model, mlp, train_loader, train_loader_mlp,
+        test_loader, lossfunction, lossfunction_mlp, 
         optimizer, mlp_optimizer, opt_lr_schedular, 
         eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
     
-    tval = {'trainacc':[],"trainloss":[]}
+    print(f"### Triplet Training begins")
+
     device = torch.device(f"cuda:{device_id}")
     model = model.to(device)
-    mlp = mlp.to(device)
     for epochs in range(n_epochs):
         model.train()
-        mlp.train()
         cur_loss = 0
-        curacc = 0
-        cur_mlp_loss = 0
         len_train = len(train_loader)
         for idx , (a, a_t, p, p_t, n, n_t) in enumerate(train_loader):
             a = a.to(device)
             p = p.to(device)
             n = n.to(device)
-
-            a_t = a_t.to(device)
             
             af, apf = model(a)
             pf, ppf = model(p)
             nf, npf = model(n)
-
-            scores = mlp(af.detach()) # not propagating gradients backward this layer
             
             loss_con, loss_sup = lossfunction(
-                z_a = apf, z_p = ppf, z_n=npf, 
-                s_a=scores, l_a = a_t)
+                z_a = apf, z_p = ppf, z_n=npf)
             
             optimizer.zero_grad()
             loss_con.backward()
             optimizer.step()
 
-            mlp_optimizer.zero_grad()
-            loss_sup.backward()
-            mlp_optimizer.step()
-
             cur_loss += loss_con.item() / (len_train)
-            cur_mlp_loss += loss_sup.item() / (len_train)
-            scores = F.softmax(scores,dim = 1)
-            _,predicted = torch.max(scores,dim = 1)
-            correct = (predicted == a_t).sum()
-            samples = scores.shape[0]
-            curacc += correct / (samples * len_train)
             
             if return_logs:
-                progress(idx+1,len(train_loader), loss_con=loss_con.item(), loss_sup=loss_sup.item(), GPU = device_id)
+                progress(idx+1,len(train_loader), loss_con=loss_con.item(), GPU = device_id)
         
         opt_lr_schedular.step()
+              
+        print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
 
-        if epochs % eval_every == 0 and device_id == eval_id:
-            cur_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
-            print(f"[GPU{device_id}] Test Accuracy at epoch: {epochs}: {cur_test_acc}")
-      
-        tval['trainacc'].append(float(curacc))
-        tval['trainloss'].append(float(cur_loss))
-        
-        print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_acc: {curacc:.3f} train_loss_con: {cur_loss:.3f} train_loss_sup: {cur_mlp_loss:.3f}")
-    
-    if device_id == eval_id:
-        final_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
-        print(f"[GPU{device_id}] Final Test Accuracy: {final_test_acc}")
+    print("### MLP training begins")
 
-    return model, tval
+    train_mlp(
+        model, mlp, train_loader_mlp, test_loader, 
+        lossfunction_mlp, mlp_optimizer, n_epochs_mlp, eval_every,
+        device_id, eval_id, return_logs = return_logs)
+
+    return model
 
 def loss_function(loss_type = 'supcon', **kwargs):
     print(f"loss function: {loss_type}")
+    loss_mlp = nn.CrossEntropyLoss()
     if loss_type == "simclr":
-        return SimCLRClsLoss(**kwargs)
+        return SimCLR(**kwargs), loss_mlp
     elif loss_type == 'supcon':
-        return SupConClsLoss(**kwargs)
+        return SupConLoss(**kwargs), loss_mlp
     elif loss_type == "triplet":
-        return TripletMarginCELoss(**kwargs)
+        return TripletMarginLoss(**kwargs), loss_mlp
     else:
         print("{loss_type} Loss is Not Supported")
         return None 

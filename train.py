@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 from src.network import Network, MLP
-from train_utils import yaml_loader, train_supcon, train_simclr, train_triplet, \
+from train_utils import yaml_loader, train_supcon, train_triplet, \
                         model_optimizer, \
                         loss_function, \
                         load_dataset
@@ -24,8 +24,10 @@ def train_network(
         model,
         mlp,
         train_dl,
+        train_dl_mlp,
         test_dl,
         loss,
+        loss_mlp,
         optimizer,
         mlp_optimizer,
         opt_lr_schedular,
@@ -36,29 +38,16 @@ def train_network(
         eval_id,
         return_logs):
     
-    if train_algo == "supcon":
+    if train_algo == "supcon" or train_algo == "simclr":
         train_supcon(
+            train_algo,
             model,
             mlp,
             train_dl,
+            train_dl_mlp,
             test_dl,
             loss,
-            optimizer,
-            mlp_optimizer,
-            opt_lr_schedular,
-            eval_every,
-            n_epochs,
-            n_epochs_mlp,
-            rank,
-            eval_id,
-            return_logs)
-    elif train_algo == "simclr":
-        train_simclr(
-            model,
-            mlp,
-            train_dl,
-            test_dl,
-            loss,
+            loss_mlp,
             optimizer,
             mlp_optimizer,
             opt_lr_schedular,
@@ -73,8 +62,10 @@ def train_network(
             model,
             mlp,
             train_dl,
+            train_dl_mlp,
             test_dl,
             loss,
+            loss_mlp,
             optimizer,
             mlp_optimizer,
             opt_lr_schedular,
@@ -103,9 +94,9 @@ def main_dist(rank, world_size, config):
 
     opt_lr_schedular = optim.lr_scheduler.CosineAnnealingLR(optimizer, **config['schedular_params'])
 
-    loss = loss_function(loss_type = config['loss'], **config.get('loss_params', {}))
+    loss, loss_mlp = loss_function(loss_type = config['loss'], **config.get('loss_params', {}))
     
-    train_dl, test_dl, train_ds, test_ds = load_dataset(
+    train_dl, train_dl_mlp, test_dl, train_ds, test_ds = load_dataset(
         dataset_name=config['data_name'],
         distributed = config['distributed'],
         **config['data_params'])
@@ -128,8 +119,10 @@ def main_dist(rank, world_size, config):
         model,
         mlp,
         train_dl,
+        train_dl_mlp,
         test_dl,
         loss,
+        loss_mlp,
         optimizer,
         mlp_optimizer,
         opt_lr_schedular,
@@ -152,9 +145,9 @@ def main_single():
 
     opt_lr_schedular = optim.lr_scheduler.CosineAnnealingLR(optimizer, **config['schedular_params'])
 
-    loss = loss_function(loss_type = config['loss'], **config.get('loss_params', {}))
+    loss, loss_mlp = loss_function(loss_type = config['loss'], **config.get('loss_params', {}))
     
-    train_dl, test_dl, train_ds, test_ds = load_dataset(
+    train_dl, train_dl_mlp, test_dl, train_ds, test_ds = load_dataset(
         dataset_name = config['data_name'],
         distributed = False,
         **config['data_params'])
@@ -174,8 +167,10 @@ def main_single():
         model,
         mlp,
         train_dl,
+        train_dl_mlp,
         test_dl,
         loss,
+        loss_mlp,
         optimizer,
         mlp_optimizer,
         opt_lr_schedular,
