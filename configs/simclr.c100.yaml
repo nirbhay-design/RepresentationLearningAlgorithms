@@ -4,12 +4,12 @@ data_name: cifar100
 data_params:
   algo: simclr
   data_dir: datasets/cifar100
-  batch_size: 1024
+  batch_size: 512
   num_workers: 3
   image_size: 32
 return_logs: False
 eval_every: 10
-n_epochs: &epoch 300
+n_epochs: &epoch 1000
 n_epochs_mlp: 100
 gpu_id: 2
 opt: SGD
@@ -30,7 +30,7 @@ mlp_opt_params:
   nesterov: True
 model_params:
   model_name: 'resnet50' 
-  pretrained: True 
+  pretrained: False 
   proj_dim: 128
 mlp_type: "hidden"
 loss: simclr

@@ -128,7 +128,9 @@ def train_supcon(
             feats_cap, proj_feat_cap = model(data_cap)
             
             if train_algo == "supcon":
-                loss_con = lossfunction(proj_feat, proj_feat_cap, target)
+                x_full = torch.cat([proj_feat,proj_feat_cap], dim = 0)
+                target_full = torch.cat([target, target])
+                loss_con = lossfunction(x_full, target_full)
             else:
                 loss_con = lossfunction(proj_feat, proj_feat_cap)
             
@@ -177,7 +179,7 @@ def train_triplet(
             pf, ppf = model(p)
             nf, npf = model(n)
             
-            loss_con, loss_sup = lossfunction(
+            loss_con = lossfunction(
                 z_a = apf, z_p = ppf, z_n=npf)
             
             optimizer.zero_grad()
