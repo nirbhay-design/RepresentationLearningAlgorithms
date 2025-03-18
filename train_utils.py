@@ -156,6 +156,51 @@ def train_supcon(
 
     return model
 
+def train_simsiam(
+        model, mlp, train_loader, train_loader_mlp,
+        test_loader, lossfunction, lossfunction_mlp, 
+        optimizer, mlp_optimizer, opt_lr_schedular, 
+        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
+    
+
+    print(f"### simsiam Training begins")
+    device = torch.device(f"cuda:{device_id}")
+    model = model.to(device)
+    for epochs in range(n_epochs):
+        model.train()
+        cur_loss = 0
+        len_train = len(train_loader)
+        for idx , (data, data_cap, target) in enumerate(train_loader):
+            data = data.to(device)
+            data_cap = data_cap.to(device)
+            
+            feats, pred_feat = model(data) # z, p
+            feats_cap, pred_feat_cap = model(data_cap)
+            
+            loss_con = 0.5 * (lossfunction(pred_feat, feats_cap.detach()) + lossfunction(pred_feat_cap, feats.detach()))
+            
+            optimizer.zero_grad()
+            loss_con.backward()
+            optimizer.step()
+
+            cur_loss += loss_con.item() / (len_train)
+            
+            if return_logs:
+                progress(idx+1,len(train_loader), loss_con=loss_con.item(), GPU = device_id)
+        
+        opt_lr_schedular.step()
+            
+        print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
+
+    print("### MLP training begins")
+
+    train_mlp(
+        model, mlp, train_loader_mlp, test_loader, 
+        lossfunction_mlp, mlp_optimizer, n_epochs_mlp, eval_every,
+        device_id, eval_id, return_logs = return_logs)
+
+    return model
+
 def train_triplet(
         model, mlp, train_loader, train_loader_mlp,
         test_loader, lossfunction, lossfunction_mlp, 

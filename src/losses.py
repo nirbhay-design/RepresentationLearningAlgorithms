@@ -128,7 +128,7 @@ class SimCLR(nn.Module):
 
         return self.supcon(x_full, fake_labels)
 
-class SimCLRClsLoss(nn.Module): 
+class SimCLRClsLoss(nn.Module):
     def __init__(self, sim = 'cosine', tau = 1.0):
         super().__init__()
         self.tau = tau
@@ -139,7 +139,7 @@ class SimCLRClsLoss(nn.Module):
     def forward(self, features, features_cap, scores, labels):
         return self.simclr(features, features_cap), self.ce(scores, labels)
 
- class SimSiamLoss(nn.Module):
+class SimSiamLoss(nn.Module):
     def __init__(self):
         super().__init__()
 

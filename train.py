@@ -4,7 +4,7 @@ import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
 from src.network import Network, MLP
-from train_utils import yaml_loader, train_supcon, train_triplet, \
+from train_utils import yaml_loader, train_supcon, train_triplet, train_simsiam, \
                         model_optimizer, \
                         loss_function, \
                         load_dataset
@@ -59,6 +59,24 @@ def train_network(
             return_logs)
     elif train_algo == "triplet":
         train_triplet(
+            model,
+            mlp,
+            train_dl,
+            train_dl_mlp,
+            test_dl,
+            loss,
+            loss_mlp,
+            optimizer,
+            mlp_optimizer,
+            opt_lr_schedular,
+            eval_every,
+            n_epochs,
+            n_epochs_mlp,
+            rank,
+            eval_id,
+            return_logs)
+    elif train_algo == "simsiam":
+        train_simsiam(
             model,
             mlp,
             train_dl,
