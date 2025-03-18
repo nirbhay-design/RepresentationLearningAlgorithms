@@ -22,7 +22,7 @@ class MLP(nn.Module):
         return self.mlp(x)
 
 class Network(nn.Module):
-    def __init__(self, model_name = 'resnet18', pretrained = False, proj_dim = 128):
+    def __init__(self, model_name = 'resnet18', pretrained = False, proj_dim = 128, algo_type="supcon", pred_dim = 512):
         super().__init__()
         if model_name == 'resnet50':
             model = torchvision.models.resnet50(
@@ -47,15 +47,41 @@ class Network(nn.Module):
             self.feat_extractor.conv1 = nn.Conv2d(in_feat, out_feat, kernel_size=3, stride=1, bias=False)
 
         self.classifier_infeatures = model._modules.get(module_keys[-1], nn.Identity()).in_features
-        self.proj = nn.Linear(self.classifier_infeatures, proj_dim)
+        
+        if algo_type == "simsiam":
+            prev_dim = self.classifier_infeatures
+            self.proj = nn.Sequential(
+                nn.Linear(prev_dim, prev_dim, bias=False),
+                nn.BatchNorm1d(prev_dim),
+                nn.ReLU(),
+                nn.Linear(prev_dim, prev_dim, bias=False),
+                nn.BatchNorm1d(prev_dim),
+                nn.ReLU(),
+                nn.Linear(prev_dim, prev_dim, bias=False),
+                nn.BatchNorm1d(prev_dim)
+            )
+            self.pred = nn.Sequential(
+                nn.Linear(prev_dim, pred_dim, bias=False),
+                nn.BatchNorm1d(pred_dim),
+                nn.ReLU(),
+                nn.Linear(pred_dim, prev_dim)
+            )
+        else:
+            self.proj = nn.Linear(self.classifier_infeatures, proj_dim)
+
+        self.algo_type = algo_type
 
     def forward(self, x):
         features = self.feat_extractor(x).flatten(1)
         proj_features = self.proj(features)
+
+        if self.algo_type == 'simsiam':
+            pred_features = self.pred(proj_features)
+            return proj_features, pred_features # proj - z, pred - p
         return features, proj_features # 2048/512, 128 proj
 
 if __name__ == "__main__":
-    network = Network(model_name = 'resnet50', pretrained=False)
+    network = Network(model_name = 'resnet50', pretrained=False, algo_type='simsiam')
     mlp = MLP(network.classifier_infeatures, num_classes=10, mlp_type='hidden')
     x = torch.rand(2,3,224,224)
     feat, proj_feat = network(x)

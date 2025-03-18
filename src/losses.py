@@ -139,6 +139,16 @@ class SimCLRClsLoss(nn.Module):
     def forward(self, features, features_cap, scores, labels):
         return self.simclr(features, features_cap), self.ce(scores, labels)
 
+ class SimSiamLoss(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, p, z):
+        p = F.normalize(p, dim = -1)
+        z = F.normalize(z, dim = -1)
+
+        return -(p * z).sum(dim = -1).mean()
+
 if __name__ == "__main__":
     scl = SupConClsLoss()
     tml = TripletMarginCELoss()
@@ -156,3 +166,5 @@ if __name__ == "__main__":
     print(scl(features, features_cap, scores, labels))
     print(sclr(features, features_cap, scores, labels))
     print(tml(features, features_p, features_n, scores, labels))
+
+    # implement bhattacharya as measure of similarity

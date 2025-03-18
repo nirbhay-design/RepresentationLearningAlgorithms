@@ -213,6 +213,8 @@ def loss_function(loss_type = 'supcon', **kwargs):
         return SupConLoss(**kwargs), loss_mlp
     elif loss_type == "triplet":
         return TripletMarginLoss(**kwargs), loss_mlp
+    elif loss_type == "simsiam":
+        return SimSiamLoss(), loss_mlp
     else:
         print("{loss_type} Loss is Not Supported")
         return None 
