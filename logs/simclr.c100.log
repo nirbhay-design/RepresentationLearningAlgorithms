@@ -50,3 +50,4 @@ Files already downloaded and verified
 [GPU2] epochs: [17/1000] train_loss_con: 5.782
 [GPU2] epochs: [18/1000] train_loss_con: 5.756
 [GPU2] epochs: [19/1000] train_loss_con: 5.737
+[GPU2] epochs: [20/1000] train_loss_con: 5.706
