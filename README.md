@@ -6,8 +6,9 @@
 
 - [x] SimCLR
 - [x] SupCon
-- [ ] SimSiam
+- [x] SimSiam
 - [x] TripletMarginLoss
+- [ ] Momentum Contrast (MoCo)
 - [ ] Masked Autoencoder
 
 ## **Extension**

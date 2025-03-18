@@ -31,3 +31,4 @@ Files already downloaded and verified
 # of Testing Images: 10000
 ### simsiam Training begins
 [GPU1] epochs: [1/350] train_loss_con: -0.803
+[GPU1] epochs: [2/350] train_loss_con: -0.767
