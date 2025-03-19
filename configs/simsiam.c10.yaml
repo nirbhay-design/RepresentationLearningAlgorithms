@@ -11,12 +11,11 @@ return_logs: False
 eval_every: 10
 n_epochs: &epoch 350
 n_epochs_mlp: 100
-gpu_id: 1
+gpu_id: 2
 opt: SGD
 opt_params:
   lr: !!float 5e-1
   momentum: 0.9
-  nesterov: True
 # schedular_params:
 #   step_size: 40 
 #   gamma: 0.1
@@ -27,10 +26,9 @@ mlp_opt: SGD
 mlp_opt_params:
   lr: !!float 0.01
   momentum: 0.9
-  nesterov: True
 model_params:
   model_name: 'resnet50' 
-  pretrained: False 
+  pretrained: True 
   proj_dim: 128
   algo_type: 'simsiam'
   pred_dim: 512

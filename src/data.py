@@ -6,7 +6,7 @@ from PIL import Image
 import pickle 
 from torch.utils.data.distributed import DistributedSampler
 
-def get_transforms(image_size, data_name = "cifar10"):
+def get_transforms(image_size, data_name = "cifar10", algo='supcon'):
     if data_name == 'cifar10':
         mean = (0.4914, 0.4822, 0.4465)
         std = (0.2023, 0.1994, 0.2010)
@@ -22,7 +22,6 @@ def get_transforms(image_size, data_name = "cifar10"):
         transforms.RandomApply([transforms.ColorJitter(0.8*s, 0.8*s, 0.8*s, 0.2*s)], p=0.8),
         transforms.RandomGrayscale(p = 0.2),
         transforms.ToTensor(),
-        # transforms.Normalize(mean = mean, std = std)
     ])
 
     train_transforms_mlp = transforms.Compose([transforms.RandomResizedCrop(image_size),
@@ -33,6 +32,17 @@ def get_transforms(image_size, data_name = "cifar10"):
         transforms.ToTensor()
         # transforms.Normalize(mean = mean, std = std)
     ])
+
+    if algo == 'simsiam':
+        train_transforms = transforms.Compose([
+            train_transforms,
+            transforms.Normalize(mean = mean, std = std)
+        ])
+
+        test_transforms = transforms.Compose([
+            test_transforms,
+            transforms.Normalize(mean = mean, std = std)
+        ])
 
     return train_transforms, train_transforms_mlp, test_transforms
 
@@ -93,7 +103,7 @@ def Cifar100DataLoader(**kwargs):
     data_dir = kwargs['data_dir']
     algo = kwargs['algo']
 
-    train_transforms, train_transforms_mlp, test_transforms = get_transforms(image_size, data_name = "cifar100")
+    train_transforms, train_transforms_mlp, test_transforms = get_transforms(image_size, data_name = "cifar100", algo=algo)
 
     distributed = kwargs['distributed']
     num_workers = kwargs['num_workers']
@@ -149,7 +159,7 @@ def Cifar10DataLoader(**kwargs):
     data_dir = kwargs['data_dir']
     algo = kwargs['algo']
 
-    train_transforms, train_transforms_mlp, test_transforms = get_transforms(image_size, data_name = "cifar10")
+    train_transforms, train_transforms_mlp, test_transforms = get_transforms(image_size, data_name = "cifar10", algo=algo)
 
     distributed = kwargs['distributed']
     num_workers = kwargs['num_workers']
