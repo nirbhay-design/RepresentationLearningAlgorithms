@@ -65,9 +65,15 @@ class SupConLoss(nn.Module):
         sim_mat = None
         if self.sim == "mse":
             sim_mat = -torch.cdist(features, features)
-        else:
+        elif self.sim == "cosine":
             features = F.normalize(features, dim = -1, p = 2)
             sim_mat = F.cosine_similarity(features[None, :, :], features[:, None, :], dim = -1)
+        else: # bhattacharya coefficient
+            features = F.normalize(features, dim = -1, p = 2)
+            features = F.softmax(features, dim = -1)
+            sqrt_feats = torch.sqrt(features) # sqrt of prob dist 
+            sim_mat = sqrt_feats @ sqrt_feats.T
+            
         # filling diagonal with -torch.inf as it will be cancel out while doing softmax
         sim_mat.fill_diagonal_(-torch.tensor(torch.inf))
         return sim_mat      
