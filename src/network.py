@@ -41,7 +41,7 @@ class Network(nn.Module):
             module_key = model._modules.get(key, nn.Identity())
             self.feat_extractor.add_module(key, module_key)
 
-        if not pretrained and algo != 'simsiam':
+        if not pretrained and algo_type != 'simsiam':
             in_feat = self.feat_extractor.conv1.in_channels
             out_feat = self.feat_extractor.conv1.out_channels
             self.feat_extractor.conv1 = nn.Conv2d(in_feat, out_feat, kernel_size=3, stride=1, bias=False)
@@ -77,11 +77,11 @@ class Network(nn.Module):
 
         if self.algo_type == 'simsiam':
             pred_features = self.pred(proj_features)
-            return proj_features, pred_features # proj - z, pred - p
+            return features, proj_features, pred_features # proj - z, pred - p
         return features, proj_features # 2048/512, 128 proj
 
 if __name__ == "__main__":
-    network = Network(model_name = 'resnet50', pretrained=False, algo_type='supcon')
+    network = Network(model_name = 'resnet50', pretrained=False, algo_type='simsiam')
     mlp = MLP(network.classifier_infeatures, num_classes=10, mlp_type='hidden')
     x = torch.rand(2,3,224,224)
     feat, proj_feat = network(x)

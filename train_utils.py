@@ -174,8 +174,8 @@ def train_simsiam(
             data = data.to(device)
             data_cap = data_cap.to(device)
             
-            feats, pred_feat = model(data) # z, p
-            feats_cap, pred_feat_cap = model(data_cap)
+            _, feats, pred_feat = model(data) # z, p
+            _, feats_cap, pred_feat_cap = model(data_cap)
             
             loss_con = 0.5 * (lossfunction(pred_feat, feats_cap.detach()) + lossfunction(pred_feat_cap, feats.detach()))
             

@@ -11,11 +11,12 @@ return_logs: False
 eval_every: 10
 n_epochs: &epoch 350
 n_epochs_mlp: 100
-gpu_id: 2
+gpu_id: 0
 opt: SGD
 opt_params:
-  lr: !!float 5e-1
+  lr: !!float 1e-1
   momentum: 0.9
+  weight_decay: !!float 1e-4
 # schedular_params:
 #   step_size: 40 
 #   gamma: 0.1
@@ -24,15 +25,15 @@ schedular_params:
   eta_min: 0.001
 mlp_opt: SGD
 mlp_opt_params:
-  lr: !!float 0.01
+  lr: !!float 0.1
   momentum: 0.9
 model_params:
   model_name: 'resnet50' 
-  pretrained: True 
+  pretrained: False 
   proj_dim: 128
   algo_type: 'simsiam'
   pred_dim: 512
-mlp_type: "hidden"
+mlp_type: "linear"
 loss: simsiam
 distributed: False
 train_algo: simsiam

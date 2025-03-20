@@ -39,6 +39,11 @@ def get_transforms(image_size, data_name = "cifar10", algo='supcon'):
             transforms.Normalize(mean = mean, std = std)
         ])
 
+        train_transforms_mlp = transforms.Compose([
+            train_transforms_mlp,
+            transforms.Normalize(mean = mean, std = std)
+        ])
+
         test_transforms = transforms.Compose([
             test_transforms,
             transforms.Normalize(mean = mean, std = std)
