@@ -36,12 +36,12 @@ class Network(nn.Module):
         module_keys = list(model._modules.keys())
         self.feat_extractor = nn.Sequential()
         for key in module_keys[:-1]:
-            if key == "maxpool": # don't add maxpool layer
+            if key == "maxpool" and algo_type != 'simsiam': # don't add maxpool layer for non simsiam 
                 continue
             module_key = model._modules.get(key, nn.Identity())
             self.feat_extractor.add_module(key, module_key)
 
-        if not pretrained:
+        if not pretrained and algo != 'simsiam':
             in_feat = self.feat_extractor.conv1.in_channels
             out_feat = self.feat_extractor.conv1.out_channels
             self.feat_extractor.conv1 = nn.Conv2d(in_feat, out_feat, kernel_size=3, stride=1, bias=False)
@@ -81,7 +81,7 @@ class Network(nn.Module):
         return features, proj_features # 2048/512, 128 proj
 
 if __name__ == "__main__":
-    network = Network(model_name = 'resnet50', pretrained=False, algo_type='simsiam')
+    network = Network(model_name = 'resnet50', pretrained=False, algo_type='supcon')
     mlp = MLP(network.classifier_infeatures, num_classes=10, mlp_type='hidden')
     x = torch.rand(2,3,224,224)
     feat, proj_feat = network(x)
@@ -89,6 +89,6 @@ if __name__ == "__main__":
     score = mlp(feat)
     print(score.shape)
 
-    # print(network)
+    print(network)
 
     # contrastive loss on proj_feat, representations are feat, MLP on feat 
