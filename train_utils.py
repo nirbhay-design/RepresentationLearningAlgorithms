@@ -291,4 +291,12 @@ def load_dataset(dataset_name, **kwargs):
         print(f"{dataset_name} is not supported")
         return None
 
+class EMA():
+    def __init__(self, tau):
+        self.tau = tau 
+
+    def __call__(self, online, target):
+        for online_wt, target_wt in zip(online.parameters(), target.parameters()):
+            target_wt.data = self.tau * online_wt.data + (1 - self.tau) * target_wt.data
+        return target 
 

@@ -95,7 +95,7 @@ class DataCifar():
             
         image, label = self.data[idx]
 
-        if self.algo == "simclr" or self.algo == "supcon" or self.algo == "simsiam":
+        if self.algo == "simclr" or self.algo == "supcon" or self.algo == "simsiam" or self.algo == "byol" or self.algo == "moco":
             img1 = self.target_transform(image)
             img2 = self.target_transform(image)
             return img1, img2, label 

@@ -77,7 +77,7 @@ class Network(nn.Module):
 
         if self.algo_type == 'simsiam':
             pred_features = self.pred(proj_features)
-            return features, proj_features, pred_features # proj - z, pred - p
+            return features, proj_features, pred_features # features, proj - z, pred - p
         return features, proj_features # 2048/512, 128 proj
 
 if __name__ == "__main__":

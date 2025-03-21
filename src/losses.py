@@ -155,6 +155,14 @@ class SimSiamLoss(nn.Module):
 
         return -(p * z).sum(dim = -1).mean()
 
+class BYOLLoss(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    def forward(self, online, target):
+        pass
+
+
 if __name__ == "__main__":
     scl = SupConClsLoss()
     tml = TripletMarginCELoss()
