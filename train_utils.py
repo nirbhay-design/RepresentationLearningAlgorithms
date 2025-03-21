@@ -25,7 +25,7 @@ def progress(current, total, **kwargs):
     if (current == total):
         print()
 
-def evaluate(model, mlp, loader, device, return_logs=False):
+def evaluate(model, mlp, loader, device, return_logs=False, algo=None):
     model.eval()
     mlp.eval()
     correct = 0;samples =0
@@ -35,7 +35,10 @@ def evaluate(model, mlp, loader, device, return_logs=False):
             x = x.to(device)
             y = y.to(device)
 
-            feats, _ = model(x)
+            if algo == 'simsiam':
+                feats, _, _ = model(x)
+            else:
+                feats, _ = model(x)
             scores = mlp(feats)
 
             predict_prob = F.softmax(scores,dim=1)
@@ -53,7 +56,7 @@ def evaluate(model, mlp, loader, device, return_logs=False):
 def train_mlp(
     model, mlp, train_loader, test_loader, 
     lossfunction, mlp_optimizer, n_epochs, eval_every,
-    device_id, eval_id, return_logs=False):
+    device_id, eval_id, return_logs=False, algo=None):
 
     tval = {'trainacc':[],"trainloss":[]}
     device = torch.device(f"cuda:{device_id}")
@@ -70,7 +73,10 @@ def train_mlp(
             target = target.to(device)
             
             with torch.no_grad():
-                feats, proj_feat = model(data)
+                if algo == "simsiam":
+                    feats, _, _ = model(data)
+                else:
+                    feats, proj_feat = model(data)
             scores = mlp(feats.detach())      
             
             loss_sup = lossfunction(scores, target)
@@ -90,7 +96,7 @@ def train_mlp(
                 progress(idx+1,len(train_loader), loss_sup=loss_sup.item(), GPU = device_id)
         
         if epochs % eval_every == 0 and device_id == eval_id:
-            cur_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
+            cur_test_acc = evaluate(model, mlp, test_loader, device, return_logs, algo=algo)
             print(f"[GPU{device_id}] Test Accuracy at epoch: {epochs}: {cur_test_acc}")
       
         tval['trainacc'].append(float(curacc))
@@ -99,7 +105,7 @@ def train_mlp(
         print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_acc: {curacc:.3f} train_loss_sup: {cur_mlp_loss:.3f}")
     
     if device_id == eval_id:
-        final_test_acc = evaluate(model, mlp, test_loader, device, return_logs)
+        final_test_acc = evaluate(model, mlp, test_loader, device, return_logs, algo=algo)
         print(f"[GPU{device_id}] Final Test Accuracy: {final_test_acc}")
 
     return mlp, tval
@@ -197,7 +203,7 @@ def train_simsiam(
     train_mlp(
         model, mlp, train_loader_mlp, test_loader, 
         lossfunction_mlp, mlp_optimizer, n_epochs_mlp, eval_every,
-        device_id, eval_id, return_logs = return_logs)
+        device_id, eval_id, return_logs = return_logs, algo='simsiam')
 
     return model
 
