@@ -160,7 +160,10 @@ class BYOLLoss(nn.Module):
         super().__init__()
 
     def forward(self, online, target):
-        pass
+        online = F.normalize(online, dim = -1)
+        target = F.normalize(target, dim = -1)
+
+        return -2 * (online * target).sum(dim = -1).mean()
 
 
 if __name__ == "__main__":

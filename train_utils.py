@@ -8,6 +8,8 @@ import torch.optim as optim
 import yaml, sys, random, numpy as np
 from yaml.loader import SafeLoader
 from src.data import *
+import math
+import copy
 
 def yaml_loader(yaml_file):
     with open(yaml_file,'r') as f:
@@ -207,6 +209,65 @@ def train_simsiam(
 
     return model
 
+def train_byol(
+        online_model, target_model, online_pred_model, mlp, train_loader, train_loader_mlp,
+        test_loader, lossfunction, lossfunction_mlp, 
+        optimizer, mlp_optimizer, opt_lr_schedular, ema_beta, 
+        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
+    
+
+    print(f"### byol Training begins")
+    device = torch.device(f"cuda:{device_id}")
+    ema = EMA(ema_beta, n_epochs)
+    online_model = online_model.to(device)
+    target_model = target_model.to(device)
+    online_pred_model = online_pred_model.to(device)
+
+    for epochs in range(n_epochs):
+        online_model.train()
+        online_pred_model.train()
+        cur_loss = 0
+        len_train = len(train_loader)
+        for idx , (data, data_cap, target) in enumerate(train_loader):
+            data = data.to(device)
+            data_cap = data_cap.to(device)
+
+            data_all = torch.cat([data, data_cap], dim = 0)
+
+            _, online_proj = online_model(data_all) # y, z
+            online_pred = online_pred_model(online_proj) # q
+            with torch.no_grad():
+                _, target_proj = target_model(data_all) # y, z
+
+            online_pred_feat, online_pred_feat_cap = online_pred.chunk(2, dim = 0)
+            target_proj_feat, target_proj_feat_cap = target_proj.chunk(2, dim = 0)
+            
+            loss_con = lossfunction(online_pred_feat, target_proj_feat_cap.detach()) + \
+                        lossfunction(online_pred_feat_cap, target_proj_feat.detach())
+            
+            optimizer.zero_grad()
+            loss_con.backward()
+            optimizer.step()
+
+            cur_loss += loss_con.item() / (len_train)
+            
+            if return_logs:
+                progress(idx+1,len(train_loader), loss_con=loss_con.item(), GPU = device_id)
+        
+        opt_lr_schedular.step()
+        target_model = ema(online_model, target_model, epochs)
+            
+        print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
+
+    print("### MLP training begins")
+
+    train_mlp(
+        online_model, mlp, train_loader_mlp, test_loader, 
+        lossfunction_mlp, mlp_optimizer, n_epochs_mlp, eval_every,
+        device_id, eval_id, return_logs = return_logs, algo='byol')
+
+    return online_model
+
 def train_triplet(
         model, mlp, train_loader, train_loader_mlp,
         test_loader, lossfunction, lossfunction_mlp, 
@@ -266,18 +327,26 @@ def loss_function(loss_type = 'supcon', **kwargs):
         return TripletMarginLoss(**kwargs), loss_mlp
     elif loss_type == "simsiam":
         return SimSiamLoss(), loss_mlp
+    elif loss_type == 'byol':
+        return BYOLLoss(), loss_mlp
     else:
         print("{loss_type} Loss is Not Supported")
         return None 
     
-def model_optimizer(model, opt_name, **opt_params):
+def model_optimizer(model, opt_name, model2 = None, **opt_params):
     print(f"using optimizer: {opt_name}")
+
+    if model2 is None:
+        params = model.parameters()
+    else:
+        params = list(model.parameters()) + list(model2.parameters())
+
     if opt_name == "SGD":
-        return optim.SGD(model.parameters(), **opt_params)
+        return optim.SGD(params, **opt_params)
     elif opt_name == "ADAM":
-        return optim.Adam(model.parameters(), **opt_params)
+        return optim.Adam(params, **opt_params)
     elif opt_name == "AdamW":
-        return optim.AdamW(model.parameters(), **opt_params)
+        return optim.AdamW(params, **opt_params)
     else:
         print("{opt_name} not available")
         return None
@@ -292,11 +361,14 @@ def load_dataset(dataset_name, **kwargs):
         return None
 
 class EMA():
-    def __init__(self, tau):
+    def __init__(self, tau, K):
+        self.tau_base = tau
         self.tau = tau 
+        self.K = K
 
-    def __call__(self, online, target):
+    def __call__(self, online, target, k):
         for online_wt, target_wt in zip(online.parameters(), target.parameters()):
             target_wt.data = self.tau * online_wt.data + (1 - self.tau) * target_wt.data
-        return target 
+        self.tau = 1 - (1 - self.tau_base) * (math.cos(math.pi * k / self.K) + 1) / 2
+        return copy.deepcopy(target) 
 

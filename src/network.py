@@ -21,8 +21,21 @@ class MLP(nn.Module):
     def forward(self, x):
         return self.mlp(x)
 
+class BYOL_mlp(nn.Module):
+    def __init__(self, in_features, hidden_dim, out_features):
+        super().__init__()
+        self.mlp = nn.Sequential(
+            nn.Linear(in_features, hidden_dim),
+            nn.BatchNorm1d(hidden_dim),
+            nn.ReLU(),
+            nn.Linear(hidden_dim, out_features)
+        )
+
+    def forward(self, x):
+        return self.mlp(x)
+
 class Network(nn.Module):
-    def __init__(self, model_name = 'resnet18', pretrained = False, proj_dim = 128, algo_type="supcon", pred_dim = 512):
+    def __init__(self, model_name = 'resnet18', pretrained = False, proj_dim = 128, algo_type="supcon", pred_dim = 512, byol_hidden = 4096):
         super().__init__()
         if model_name == 'resnet50':
             model = torchvision.models.resnet50(
@@ -33,15 +46,16 @@ class Network(nn.Module):
         else:
             print(f"{model_name} model type not supported")
             model = None
+
         module_keys = list(model._modules.keys())
         self.feat_extractor = nn.Sequential()
         for key in module_keys[:-1]:
-            if key == "maxpool" and algo_type != 'simsiam': # don't add maxpool layer for non simsiam 
+            if key == "maxpool": # don't add maxpool layer
                 continue
             module_key = model._modules.get(key, nn.Identity())
             self.feat_extractor.add_module(key, module_key)
 
-        if not pretrained and algo_type != 'simsiam':
+        if not pretrained:
             in_feat = self.feat_extractor.conv1.in_channels
             out_feat = self.feat_extractor.conv1.out_channels
             self.feat_extractor.conv1 = nn.Conv2d(in_feat, out_feat, kernel_size=3, stride=1, bias=False)
@@ -66,6 +80,8 @@ class Network(nn.Module):
                 nn.ReLU(),
                 nn.Linear(pred_dim, prev_dim)
             )
+        elif algo_type == 'byol':
+            self.proj = BYOL_mlp(in_features = self.classifier_infeatures, hidden_dim = byol_hidden, out_features = proj_dim)
         else:
             self.proj = nn.Linear(self.classifier_infeatures, proj_dim)
 
@@ -81,7 +97,7 @@ class Network(nn.Module):
         return features, proj_features # 2048/512, 128 proj
 
 if __name__ == "__main__":
-    network = Network(model_name = 'resnet50', pretrained=False, algo_type='simsiam')
+    network = Network(model_name = 'resnet50', pretrained=False, algo_type='byol', byol_hidden = 4096, proj_dim = 256)
     mlp = MLP(network.classifier_infeatures, num_classes=10, mlp_type='hidden')
     x = torch.rand(2,3,224,224)
     feat, proj_feat = network(x)
@@ -90,5 +106,7 @@ if __name__ == "__main__":
     print(score.shape)
 
     print(network)
+
+    print(network.proj.mlp[-1].out_features)
 
     # contrastive loss on proj_feat, representations are feat, MLP on feat 

@@ -33,7 +33,7 @@ def get_transforms(image_size, data_name = "cifar10", algo='supcon'):
         # transforms.Normalize(mean = mean, std = std)
     ])
 
-    if algo == 'simsiam':
+    if algo == 'simsiam' or algo == 'byol':
         train_transforms = transforms.Compose([
             train_transforms,
             transforms.Normalize(mean = mean, std = std)
