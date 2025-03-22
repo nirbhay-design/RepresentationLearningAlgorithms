@@ -5,7 +5,7 @@ import torch.optim as optim
 import numpy as np
 from src.network import Network, MLP, BYOL_mlp
 from train_utils import yaml_loader, train_supcon, train_triplet, train_simsiam, \
-                        train_byol, model_optimizer, \
+                        train_byol, train_barlow_twins, model_optimizer, \
                         loss_function, \
                         load_dataset
 
@@ -31,6 +31,8 @@ def train_network(**kwargs):
         train_simsiam(**kwargs)
     elif train_algo == 'byol':
         train_byol(**kwargs)
+    elif train_algo == "barlow_twins":
+        train_barlow_twins(**kwargs)
 
 def main_single():
     train_algo = config['train_algo']
@@ -72,7 +74,7 @@ def main_single():
     
     if train_algo == 'simclr' or train_algo == 'supcon':
         pass # no need to add anything
-    elif train_algo == 'triplet':
+    elif train_algo == 'triplet' or train_algo == "barlow_twins":
         pass # no change for triplet margin loss 
     elif train_algo == 'simsiam':
         mlp_opt_lr_schedular = optim.lr_scheduler.StepLR(mlp_optimizer, **config['mlp_schedular_params'])

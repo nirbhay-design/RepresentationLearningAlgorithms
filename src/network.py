@@ -35,7 +35,7 @@ class BYOL_mlp(nn.Module):
         return self.mlp(x)
 
 class Network(nn.Module):
-    def __init__(self, model_name = 'resnet18', pretrained = False, proj_dim = 128, algo_type="supcon", pred_dim = 512, byol_hidden = 4096):
+    def __init__(self, model_name = 'resnet18', pretrained = False, proj_dim = 128, algo_type="supcon", pred_dim = 512, byol_hidden = 4096, barlow_hidden = 8192):
         super().__init__()
         if model_name == 'resnet50':
             model = torchvision.models.resnet50(
@@ -82,6 +82,16 @@ class Network(nn.Module):
             )
         elif algo_type == 'byol':
             self.proj = BYOL_mlp(in_features = self.classifier_infeatures, hidden_dim = byol_hidden, out_features = proj_dim)
+        elif algo_type == "barlow_twins":
+            self.proj = nn.Sequential(
+                nn.Linear(self.classifier_infeatures, barlow_hidden, bias=False),
+                nn.BatchNorm1d(barlow_hidden, bias=False),
+                nn.ReLU(),
+                nn.Linear(barlow_hidden, barlow_hidden, bias=False),
+                nn.BatchNorm1d(barlow_hidden),
+                nn.ReLU(),
+                nn.Linear(barlow_hidden, proj_dim)
+            )
         else:
             self.proj = nn.Linear(self.classifier_infeatures, proj_dim)
 
