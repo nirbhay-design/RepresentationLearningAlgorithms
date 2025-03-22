@@ -58,7 +58,7 @@ def evaluate(model, mlp, loader, device, return_logs=False, algo=None):
 def train_mlp(
     model, mlp, train_loader, test_loader, 
     lossfunction, mlp_optimizer, n_epochs, eval_every,
-    device_id, eval_id, return_logs=False, algo=None):
+    device_id, eval_id, return_logs=False, algo=None, mlp_schedular=None):
 
     tval = {'trainacc':[],"trainloss":[]}
     device = torch.device(f"cuda:{device_id}")
@@ -96,6 +96,9 @@ def train_mlp(
             
             if return_logs:
                 progress(idx+1,len(train_loader), loss_sup=loss_sup.item(), GPU = device_id)
+        
+        if mlp_schedular is not None:
+            mlp_schedular.step()
         
         if epochs % eval_every == 0 and device_id == eval_id:
             cur_test_acc = evaluate(model, mlp, test_loader, device, return_logs, algo=algo)
@@ -167,7 +170,7 @@ def train_supcon(
 def train_simsiam(
         model, mlp, train_loader, train_loader_mlp,
         test_loader, lossfunction, lossfunction_mlp, 
-        optimizer, mlp_optimizer, opt_lr_schedular, 
+        optimizer, mlp_optimizer, opt_lr_schedular, mlp_opt_lr_schedular, 
         eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
     
 
@@ -205,7 +208,7 @@ def train_simsiam(
     train_mlp(
         model, mlp, train_loader_mlp, test_loader, 
         lossfunction_mlp, mlp_optimizer, n_epochs_mlp, eval_every,
-        device_id, eval_id, return_logs = return_logs, algo='simsiam')
+        device_id, eval_id, return_logs = return_logs, algo='simsiam', mlp_schedular = mlp_opt_lr_schedular)
 
     return model
 

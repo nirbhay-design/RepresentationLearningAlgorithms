@@ -27,6 +27,9 @@ mlp_opt: SGD
 mlp_opt_params:
   lr: !!float 30
   momentum: 0.9
+mlp_schedular_params:
+  step_size: 20
+  gamma: 0.1
 model_params:
   model_name: 'resnet50' 
   pretrained: False 
