@@ -10,7 +10,7 @@
 - [x] [TripletMarginLoss](https://arxiv.org/pdf/2107.06187)
 - [ ] [Momentum Contrast (MoCo) (CVPR 2020)](https://openaccess.thecvf.com/content_CVPR_2020/papers/He_Momentum_Contrast_for_Unsupervised_Visual_Representation_Learning_CVPR_2020_paper.pdf)
 - [x] [Bootstrap your own Latent (BYOL) (NIPS 2020)](https://arxiv.org/pdf/2006.07733)
-- [ ] [DINO (ICCV 2021)](https://openaccess.thecvf.com/content/ICCV2021/papers/Caron_Emerging_Properties_in_Self-Supervised_Vision_Transformers_ICCV_2021_paper.pdf)
+- [ ] [Barlow Twins (ICML 2021)](https://arxiv.org/abs/2103.03230)
 
 ## **Extension**
 
