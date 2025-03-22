@@ -2,7 +2,7 @@
 
 - To implement Representation Learning algorithms (Contrastive and self-supervised learning algorithms)
 
-## **Algos to Implement**
+## **Algos Implemented**
 
 - [x] [SimCLR (ICML 2020)](https://arxiv.org/pdf/2002.05709)
 - [x] [SupCon (NIPS 2020)](https://proceedings.neurips.cc/paper/2020/file/d89a66c7c80a29b1bdbab0f2a1a94af8-Paper.pdf)
