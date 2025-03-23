@@ -822,3 +822,125 @@ Files already downloaded and verified
 [GPU0] epochs: [788/800] train_loss_con: -3.980
 [GPU0] epochs: [789/800] train_loss_con: -3.980
 [GPU0] epochs: [790/800] train_loss_con: -3.980
+[GPU0] epochs: [791/800] train_loss_con: -3.980
+[GPU0] epochs: [792/800] train_loss_con: -3.981
+[GPU0] epochs: [793/800] train_loss_con: -3.980
+[GPU0] epochs: [794/800] train_loss_con: -3.980
+[GPU0] epochs: [795/800] train_loss_con: -3.980
+[GPU0] epochs: [796/800] train_loss_con: -3.980
+[GPU0] epochs: [797/800] train_loss_con: -3.980
+[GPU0] epochs: [798/800] train_loss_con: -3.981
+[GPU0] epochs: [799/800] train_loss_con: -3.980
+[GPU0] epochs: [800/800] train_loss_con: -3.980
+### MLP training begins
+[GPU0] Test Accuracy at epoch: 0: 0.359
+[GPU0] epochs: [1/100] train_acc: 0.264 train_loss_sup: 51.644
+[GPU0] epochs: [2/100] train_acc: 0.455 train_loss_sup: 2.295
+[GPU0] epochs: [3/100] train_acc: 0.560 train_loss_sup: 1.190
+[GPU0] epochs: [4/100] train_acc: 0.583 train_loss_sup: 1.095
+[GPU0] epochs: [5/100] train_acc: 0.597 train_loss_sup: 1.064
+[GPU0] epochs: [6/100] train_acc: 0.603 train_loss_sup: 1.073
+[GPU0] epochs: [7/100] train_acc: 0.606 train_loss_sup: 1.047
+[GPU0] epochs: [8/100] train_acc: 0.614 train_loss_sup: 1.026
+[GPU0] epochs: [9/100] train_acc: 0.618 train_loss_sup: 1.019
+[GPU0] epochs: [10/100] train_acc: 0.623 train_loss_sup: 1.028
+[GPU0] Test Accuracy at epoch: 10: 0.667
+[GPU0] epochs: [11/100] train_acc: 0.625 train_loss_sup: 1.006
+[GPU0] epochs: [12/100] train_acc: 0.629 train_loss_sup: 0.998
+[GPU0] epochs: [13/100] train_acc: 0.634 train_loss_sup: 0.989
+[GPU0] epochs: [14/100] train_acc: 0.637 train_loss_sup: 0.979
+[GPU0] epochs: [15/100] train_acc: 0.641 train_loss_sup: 0.972
+[GPU0] epochs: [16/100] train_acc: 0.644 train_loss_sup: 0.964
+[GPU0] epochs: [17/100] train_acc: 0.638 train_loss_sup: 1.004
+[GPU0] epochs: [18/100] train_acc: 0.642 train_loss_sup: 0.968
+[GPU0] epochs: [19/100] train_acc: 0.598 train_loss_sup: 3.628
+[GPU0] epochs: [20/100] train_acc: 0.613 train_loss_sup: 1.036
+[GPU0] Test Accuracy at epoch: 20: 0.672
+[GPU0] epochs: [21/100] train_acc: 0.630 train_loss_sup: 1.000
+[GPU0] epochs: [22/100] train_acc: 0.634 train_loss_sup: 0.987
+[GPU0] epochs: [23/100] train_acc: 0.638 train_loss_sup: 0.978
+[GPU0] epochs: [24/100] train_acc: 0.640 train_loss_sup: 0.976
+[GPU0] epochs: [25/100] train_acc: 0.644 train_loss_sup: 0.968
+[GPU0] epochs: [26/100] train_acc: 0.647 train_loss_sup: 0.957
+[GPU0] epochs: [27/100] train_acc: 0.646 train_loss_sup: 0.959
+[GPU0] epochs: [28/100] train_acc: 0.648 train_loss_sup: 0.954
+[GPU0] epochs: [29/100] train_acc: 0.654 train_loss_sup: 0.945
+[GPU0] epochs: [30/100] train_acc: 0.653 train_loss_sup: 0.947
+[GPU0] Test Accuracy at epoch: 30: 0.669
+[GPU0] epochs: [31/100] train_acc: 0.650 train_loss_sup: 0.948
+[GPU0] epochs: [32/100] train_acc: 0.657 train_loss_sup: 0.935
+[GPU0] epochs: [33/100] train_acc: 0.656 train_loss_sup: 0.936
+[GPU0] epochs: [34/100] train_acc: 0.659 train_loss_sup: 0.929
+[GPU0] epochs: [35/100] train_acc: 0.657 train_loss_sup: 0.937
+[GPU0] epochs: [36/100] train_acc: 0.657 train_loss_sup: 0.936
+[GPU0] epochs: [37/100] train_acc: 0.661 train_loss_sup: 0.927
+[GPU0] epochs: [38/100] train_acc: 0.654 train_loss_sup: 0.939
+[GPU0] epochs: [39/100] train_acc: 0.664 train_loss_sup: 0.922
+[GPU0] epochs: [40/100] train_acc: 0.666 train_loss_sup: 0.913
+[GPU0] Test Accuracy at epoch: 40: 0.706
+[GPU0] epochs: [41/100] train_acc: 0.668 train_loss_sup: 0.916
+[GPU0] epochs: [42/100] train_acc: 0.664 train_loss_sup: 0.921
+[GPU0] epochs: [43/100] train_acc: 0.664 train_loss_sup: 0.916
+[GPU0] epochs: [44/100] train_acc: 0.667 train_loss_sup: 0.952
+[GPU0] epochs: [45/100] train_acc: 0.664 train_loss_sup: 0.919
+[GPU0] epochs: [46/100] train_acc: 0.664 train_loss_sup: 0.912
+[GPU0] epochs: [47/100] train_acc: 0.668 train_loss_sup: 0.910
+[GPU0] epochs: [48/100] train_acc: 0.667 train_loss_sup: 0.940
+[GPU0] epochs: [49/100] train_acc: 0.665 train_loss_sup: 0.917
+[GPU0] epochs: [50/100] train_acc: 0.668 train_loss_sup: 0.907
+[GPU0] Test Accuracy at epoch: 50: 0.719
+[GPU0] epochs: [51/100] train_acc: 0.669 train_loss_sup: 0.901
+[GPU0] epochs: [52/100] train_acc: 0.670 train_loss_sup: 0.903
+[GPU0] epochs: [53/100] train_acc: 0.666 train_loss_sup: 0.911
+[GPU0] epochs: [54/100] train_acc: 0.669 train_loss_sup: 0.899
+[GPU0] epochs: [55/100] train_acc: 0.672 train_loss_sup: 0.899
+[GPU0] epochs: [56/100] train_acc: 0.672 train_loss_sup: 0.899
+[GPU0] epochs: [57/100] train_acc: 0.671 train_loss_sup: 0.896
+[GPU0] epochs: [58/100] train_acc: 0.675 train_loss_sup: 0.891
+[GPU0] epochs: [59/100] train_acc: 0.673 train_loss_sup: 0.896
+[GPU0] epochs: [60/100] train_acc: 0.674 train_loss_sup: 0.893
+[GPU0] Test Accuracy at epoch: 60: 0.721
+[GPU0] epochs: [61/100] train_acc: 0.676 train_loss_sup: 0.889
+[GPU0] epochs: [62/100] train_acc: 0.672 train_loss_sup: 0.890
+[GPU0] epochs: [63/100] train_acc: 0.678 train_loss_sup: 0.882
+[GPU0] epochs: [64/100] train_acc: 0.672 train_loss_sup: 0.901
+[GPU0] epochs: [65/100] train_acc: 0.670 train_loss_sup: 0.897
+[GPU0] epochs: [66/100] train_acc: 0.680 train_loss_sup: 0.877
+[GPU0] epochs: [67/100] train_acc: 0.676 train_loss_sup: 0.887
+[GPU0] epochs: [68/100] train_acc: 0.673 train_loss_sup: 0.896
+[GPU0] epochs: [69/100] train_acc: 0.679 train_loss_sup: 0.883
+[GPU0] epochs: [70/100] train_acc: 0.678 train_loss_sup: 0.884
+[GPU0] Test Accuracy at epoch: 70: 0.723
+[GPU0] epochs: [71/100] train_acc: 0.679 train_loss_sup: 0.878
+[GPU0] epochs: [72/100] train_acc: 0.674 train_loss_sup: 0.892
+[GPU0] epochs: [73/100] train_acc: 0.678 train_loss_sup: 0.881
+[GPU0] epochs: [74/100] train_acc: 0.679 train_loss_sup: 0.882
+[GPU0] epochs: [75/100] train_acc: 0.678 train_loss_sup: 0.877
+[GPU0] epochs: [76/100] train_acc: 0.681 train_loss_sup: 0.870
+[GPU0] epochs: [77/100] train_acc: 0.678 train_loss_sup: 0.881
+[GPU0] epochs: [78/100] train_acc: 0.681 train_loss_sup: 0.875
+[GPU0] epochs: [79/100] train_acc: 0.683 train_loss_sup: 0.873
+[GPU0] epochs: [80/100] train_acc: 0.683 train_loss_sup: 0.869
+[GPU0] Test Accuracy at epoch: 80: 0.715
+[GPU0] epochs: [81/100] train_acc: 0.683 train_loss_sup: 0.869
+[GPU0] epochs: [82/100] train_acc: 0.678 train_loss_sup: 0.881
+[GPU0] epochs: [83/100] train_acc: 0.681 train_loss_sup: 0.868
+[GPU0] epochs: [84/100] train_acc: 0.680 train_loss_sup: 0.871
+[GPU0] epochs: [85/100] train_acc: 0.681 train_loss_sup: 0.872
+[GPU0] epochs: [86/100] train_acc: 0.681 train_loss_sup: 0.871
+[GPU0] epochs: [87/100] train_acc: 0.687 train_loss_sup: 0.861
+[GPU0] epochs: [88/100] train_acc: 0.682 train_loss_sup: 0.872
+[GPU0] epochs: [89/100] train_acc: 0.683 train_loss_sup: 0.868
+[GPU0] epochs: [90/100] train_acc: 0.683 train_loss_sup: 0.871
+[GPU0] Test Accuracy at epoch: 90: 0.738
+[GPU0] epochs: [91/100] train_acc: 0.684 train_loss_sup: 0.868
+[GPU0] epochs: [92/100] train_acc: 0.681 train_loss_sup: 0.872
+[GPU0] epochs: [93/100] train_acc: 0.684 train_loss_sup: 0.869
+[GPU0] epochs: [94/100] train_acc: 0.685 train_loss_sup: 0.863
+[GPU0] epochs: [95/100] train_acc: 0.683 train_loss_sup: 0.871
+[GPU0] epochs: [96/100] train_acc: 0.683 train_loss_sup: 0.869
+[GPU0] epochs: [97/100] train_acc: 0.684 train_loss_sup: 0.865
+[GPU0] epochs: [98/100] train_acc: 0.688 train_loss_sup: 0.858
+[GPU0] epochs: [99/100] train_acc: 0.682 train_loss_sup: 0.866
+[GPU0] epochs: [100/100] train_acc: 0.685 train_loss_sup: 0.866
+[GPU0] Final Test Accuracy: 0.692
