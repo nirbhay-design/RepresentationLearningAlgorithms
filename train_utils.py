@@ -170,7 +170,7 @@ def train_supcon(
 def train_simsiam(
         model, mlp, train_loader, train_loader_mlp,
         test_loader, lossfunction, lossfunction_mlp, 
-        optimizer, mlp_optimizer, opt_lr_schedular, mlp_opt_lr_schedular, 
+        optimizer, mlp_optimizer, opt_lr_schedular, 
         eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
     
 
@@ -208,68 +208,9 @@ def train_simsiam(
     train_mlp(
         model, mlp, train_loader_mlp, test_loader, 
         lossfunction_mlp, mlp_optimizer, n_epochs_mlp, eval_every,
-        device_id, eval_id, return_logs = return_logs, algo='simsiam', mlp_schedular = mlp_opt_lr_schedular)
+        device_id, eval_id, return_logs = return_logs, algo='simsiam')
 
     return model
-
-# def train_byol_nice(
-#         online_model, target_model, online_pred_model, mlp, train_loader, train_loader_mlp,
-#         test_loader, lossfunction, lossfunction_mlp, 
-#         optimizer, mlp_optimizer, opt_lr_schedular, ema_beta, 
-#         eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
-    
-
-#     print(f"### byol Training begins")
-#     device = torch.device(f"cuda:{device_id}")
-#     ema = EMA(ema_beta, n_epochs)
-#     online_model = online_model.to(device)
-#     target_model = target_model.to(device)
-#     online_pred_model = online_pred_model.to(device)
-
-#     for epochs in range(n_epochs):
-#         online_model.train()
-#         online_pred_model.train()
-#         cur_loss = 0
-#         len_train = len(train_loader)
-#         for idx , (data, data_cap, target) in enumerate(train_loader):
-#             data = data.to(device)
-#             data_cap = data_cap.to(device)
-
-#             data_all = torch.cat([data, data_cap], dim = 0)
-
-#             _, online_proj = online_model(data_all) # y, z
-#             online_pred = online_pred_model(online_proj) # q
-#             with torch.no_grad():
-#                 _, target_proj = target_model(data_all) # y, z
-
-#             online_pred_feat, online_pred_feat_cap = online_pred.chunk(2, dim = 0)
-#             target_proj_feat, target_proj_feat_cap = target_proj.chunk(2, dim = 0)
-            
-#             loss_con = lossfunction(online_pred_feat, target_proj_feat_cap.detach()) + \
-#                         lossfunction(online_pred_feat_cap, target_proj_feat.detach())
-            
-#             optimizer.zero_grad()
-#             loss_con.backward()
-#             optimizer.step()
-
-#             cur_loss += loss_con.item() / (len_train)
-            
-#             if return_logs:
-#                 progress(idx+1,len(train_loader), loss_con=loss_con.item(), GPU = device_id)
-        
-#         opt_lr_schedular.step()
-#         target_model = ema(online_model, target_model, epochs)
-            
-#         print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
-
-#     print("### MLP training begins")
-
-#     train_mlp(
-#         online_model, mlp, train_loader_mlp, test_loader, 
-#         lossfunction_mlp, mlp_optimizer, n_epochs_mlp, eval_every,
-#         device_id, eval_id, return_logs = return_logs, algo='byol')
-
-#     return online_model
 
 def train_byol(
         online_model, target_model, online_pred_model, mlp, train_loader, train_loader_mlp,
@@ -280,19 +221,17 @@ def train_byol(
 
     print(f"### byol Training begins")
     device = torch.device(f"cuda:{device_id}")
-    ema = EMA(ema_beta, n_epochs * len(train_loader))
+    ema = EMA(ema_beta, n_epochs)
     online_model = online_model.to(device)
     target_model = target_model.to(device)
     online_pred_model = online_pred_model.to(device)
 
-    cur_it = 0
     for epochs in range(n_epochs):
         online_model.train()
         online_pred_model.train()
         cur_loss = 0
         len_train = len(train_loader)
         for idx , (data, data_cap, target) in enumerate(train_loader):
-            cur_it += 1
             data = data.to(device)
             data_cap = data_cap.to(device)
 
@@ -313,14 +252,13 @@ def train_byol(
             loss_con.backward()
             optimizer.step()
 
-            target_model = ema(online_model, target_model, cur_it)
-
             cur_loss += loss_con.item() / (len_train)
             
             if return_logs:
                 progress(idx+1,len(train_loader), loss_con=loss_con.item(), GPU = device_id)
         
         opt_lr_schedular.step()
+        target_model = ema(online_model, target_model, epochs)
             
         print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
 
@@ -332,7 +270,6 @@ def train_byol(
         device_id, eval_id, return_logs = return_logs, algo='byol')
 
     return online_model
-
 
 def train_triplet(
         model, mlp, train_loader, train_loader_mlp,

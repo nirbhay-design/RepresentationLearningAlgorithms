@@ -74,11 +74,11 @@ def main_single():
     
     if train_algo == 'simclr' or train_algo == 'supcon':
         pass # no need to add anything
-    elif train_algo == 'triplet' or train_algo == "barlow_twins":
+    elif train_algo == 'triplet' or train_algo == "barlow_twins" or train_algo == "simsiam":
         pass # no change for triplet margin loss 
-    elif train_algo == 'simsiam':
-        mlp_opt_lr_schedular = optim.lr_scheduler.StepLR(mlp_optimizer, **config['mlp_schedular_params'])
-        param_config["mlp_opt_lr_schedular"] = mlp_opt_lr_schedular
+    # elif train_algo == 'simsiam':
+    #     mlp_opt_lr_schedular = optim.lr_scheduler.StepLR(mlp_optimizer, **config['mlp_schedular_params'])
+    #     param_config["mlp_opt_lr_schedular"] = mlp_opt_lr_schedular
     elif train_algo == 'byol':
         target_net = Network(**config['model_params'])
         ema_tau = config['ema_tau']
