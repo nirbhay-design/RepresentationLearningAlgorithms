@@ -937,3 +937,9 @@ Files already downloaded and verified
 [GPU3] epochs: [93/100] train_acc: 0.492 train_loss_sup: 1.889
 [GPU3] epochs: [94/100] train_acc: 0.493 train_loss_sup: 1.885
 [GPU3] epochs: [95/100] train_acc: 0.489 train_loss_sup: 1.897
+[GPU3] epochs: [96/100] train_acc: 0.490 train_loss_sup: 1.891
+[GPU3] epochs: [97/100] train_acc: 0.494 train_loss_sup: 1.880
+[GPU3] epochs: [98/100] train_acc: 0.497 train_loss_sup: 1.878
+[GPU3] epochs: [99/100] train_acc: 0.494 train_loss_sup: 1.877
+[GPU3] epochs: [100/100] train_acc: 0.495 train_loss_sup: 1.868
+[GPU3] Final Test Accuracy: 0.477
