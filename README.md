@@ -1,4 +1,4 @@
-## **AIM of the project**
+## **AIM of the Project**
 
 - To implement Representation Learning algorithms (Contrastive and self-supervised learning algorithms)
 
@@ -12,6 +12,19 @@
 - [x] [TripletMarginLoss (CVPR 2015)](https://www.cv-foundation.org/openaccess/content_cvpr_2015/papers/Schroff_FaceNet_A_Unified_2015_CVPR_paper.pdf)
 
 <!-- - [ ] [Momentum Contrast (MoCo) (CVPR 2020)](https://openaccess.thecvf.com/content_CVPR_2020/papers/He_Momentum_Contrast_for_Unsupervised_Visual_Representation_Learning_CVPR_2020_paper.pdf) -->
+
+
+## **Results**
+
+|Algorithm|CIFAR10|CIFAR100|
+|---|---|---|
+|SimCLR|87.5|57.7|
+|SupCon|94.0|74.7|
+|Triplet|83.4|76.3|
+|Barlow Twins|81.2|47.7|
+|BYOL|83.0|47.0|
+|SimSiam|-|-|
+|Bhattacharya(Ours)|63.9|32.2|
 
 ## **Extension**
 
