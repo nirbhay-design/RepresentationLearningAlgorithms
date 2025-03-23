@@ -29,7 +29,7 @@ mlp_opt_params:
   momentum: 0.9
   nesterov: True
 model_params:
-  model_name: 'resnet50' 
+  model_name: 'resnet18' 
   pretrained: False 
   proj_dim: 128
 mlp_type: "hidden"

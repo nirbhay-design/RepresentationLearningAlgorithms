@@ -11,7 +11,7 @@ return_logs: False
 eval_every: 10
 n_epochs: &epoch 350
 n_epochs_mlp: 100
-gpu_id: 1
+gpu_id: 0
 opt: SGD
 opt_params:
   lr: !!float 5e-1
@@ -29,7 +29,7 @@ mlp_opt_params:
   momentum: 0.9
   nesterov: True
 model_params:
-  model_name: 'resnet50' 
+  model_name: 'resnet18' 
   pretrained: False 
   proj_dim: 128
 mlp_type: "hidden"
