@@ -28,7 +28,7 @@ mlp_opt_params:
   lr: !!float 0.01
   momentum: 0.9
 model_params:
-  model_name: 'resnet18' 
+  model_name: 'resnet50' 
   pretrained: False 
   proj_dim: 128
   algo_type: 'simsiam'
