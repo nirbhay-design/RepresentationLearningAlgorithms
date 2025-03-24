@@ -23,7 +23,7 @@
 |Triplet|83.4|76.3|86.0|
 |Barlow Twins|81.2|47.7|79.7|
 |BYOL|83.0|47.0|84.8|
-|SimSiam|76.5|34.5|-|
+|SimSiam|76.5|34.5|88.6|
 |Bhattacharya(Ours)|63.9|32.2|-|
 
 ## **Extension**
