@@ -17,8 +17,7 @@ def load_log_file(filepath):
 
 def plot_loss_test_accuracy(data_dir):
     filenames = os.listdir(data_dir)
-    filenames.remove("simsiam.c10.log")
-    filenames.remove("simsiam.c100.log")
+    filenames.remove("simsiam.c10.r18.log")
     all_files = list(map(lambda x: os.path.join(data_dir, x), filenames))
     all_files_data = {}
     keywords_found = 0
@@ -34,7 +33,7 @@ def plot_loss_test_accuracy(data_dir):
 
     for file in all_files_data.keys():
         algo, data = file.split(".")[:2]
-        print(f"Best Test Accuracy: algo: {algo}, dataset: {data}: {max(all_files_data[file]['Test Accuracy'])}")
+        print(f"[{file}] Best Test Accuracy: algo: {algo}, dataset: {data}: {max(all_files_data[file]['Test Accuracy'])}")
         datanames[data].append(file) 
 
 #     for data, datafiles in datanames.items():

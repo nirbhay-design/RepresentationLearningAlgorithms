@@ -16,15 +16,15 @@
 
 ## **Results**
 
-|Algorithm|CIFAR10|CIFAR100|
-|---|---|---|
-|SimCLR|87.5|57.7|
-|SupCon|94.0|74.7|
-|Triplet|83.4|76.3|
-|Barlow Twins|81.2|47.7|
-|BYOL|83.0|47.0|
-|SimSiam|-|-|
-|Bhattacharya(Ours)|63.9|32.2|
+|Algorithm|CIFAR10(R50)|CIFAR100(R50)|CIFAR10(R18)|
+|---|---|---|---|
+|SimCLR|87.5|57.7|85.9|
+|SupCon|94.0|74.7|93.5|
+|Triplet|83.4|76.3|86.0|
+|Barlow Twins|81.2|47.7|79.7|
+|BYOL|83.0|47.0|84.8|
+|SimSiam|76.5|34.5|-|
+|Bhattacharya(Ours)|63.9|32.2|-|
 
 ## **Extension**
 

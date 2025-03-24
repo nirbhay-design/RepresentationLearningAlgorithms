@@ -11,7 +11,7 @@ return_logs: False
 eval_every: 10
 n_epochs: &epoch 800
 n_epochs_mlp: 100
-gpu_id: 1
+gpu_id: 7
 opt: SGD
 opt_params:
   lr: !!float 6e-2
@@ -25,10 +25,10 @@ schedular_params:
   eta_min: 0.001
 mlp_opt: SGD
 mlp_opt_params:
-  lr: !!float 0.1
+  lr: !!float 0.01
   momentum: 0.9
 model_params:
-  model_name: 'resnet50' 
+  model_name: 'resnet18' 
   pretrained: False 
   proj_dim: 128
   algo_type: 'simsiam'
