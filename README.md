@@ -16,7 +16,7 @@
 
 ## **Results**
 
-|Algorithm|CIFAR10(R50)|CIFAR100(R50)|CIFAR10(R18)|
+|Algorithm|CIFAR10 (R50)|CIFAR100 (R50)|CIFAR10 (R18)|
 |---|---|---|---|
 |SimCLR|87.5|57.7|85.9|
 |SupCon|94.0|74.7|93.5|
