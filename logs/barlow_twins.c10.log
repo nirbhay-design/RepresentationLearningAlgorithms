@@ -415,3 +415,7 @@ Files already downloaded and verified
 [GPU3] epochs: [382/800] train_loss_con: 12.367
 [GPU3] epochs: [383/800] train_loss_con: 12.184
 [GPU3] epochs: [384/800] train_loss_con: 12.295
+[GPU3] epochs: [385/800] train_loss_con: 12.194
+[GPU3] epochs: [386/800] train_loss_con: 12.329
+[GPU3] epochs: [387/800] train_loss_con: 12.047
+[GPU3] epochs: [388/800] train_loss_con: 12.212
