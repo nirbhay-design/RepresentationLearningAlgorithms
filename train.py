@@ -66,11 +66,15 @@ def main_single():
     n_epochs_mlp = config['n_epochs_mlp']
     device = config['gpu_id']
 
+    tsne_name = "_".join(sys.argv[1].split('.')[:-1])
+
+    print(tsne_name)
+
     ## defining parameter configs for each training algorithm
     param_config = {"train_algo": train_algo, "model": model, "mlp": mlp, "train_loader": train_dl, "train_loader_mlp": train_dl_mlp,
         "test_loader": test_dl, "lossfunction": loss, "lossfunction_mlp": loss_mlp, "optimizer": optimizer, 
         "mlp_optimizer": mlp_optimizer, "opt_lr_schedular": opt_lr_schedular, "eval_every": eval_every, 
-        "n_epochs": n_epochs, "n_epochs_mlp": n_epochs_mlp, "device_id": device, "eval_id": device, "return_logs": return_logs}
+        "n_epochs": n_epochs, "n_epochs_mlp": n_epochs_mlp, "device_id": device, "eval_id": device, "tsne_name": tsne_name, "return_logs": return_logs}
     
     if train_algo == 'simclr' or train_algo == 'supcon':
         pass # no need to add anything
@@ -102,6 +106,14 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     torch.backends.cuda.matmul.allow_tf32 = True
     torch.backends.cudnn.allow_tf32 = True
+
+    args = sys.argv
+    if '--gpu' in args:
+        idx = args.index('--gpu')
+        config['gpu_id'] = args[idx+1]
+    if '--model' in args:
+        idx = args.index('--model')
+        config['model_params']['model_name'] = args[idx+1]
 
     print("environment: ")
     print(f"YAML: {sys.argv[1]}")

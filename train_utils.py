@@ -10,6 +10,8 @@ from yaml.loader import SafeLoader
 from src.data import *
 import math
 import copy
+from sklearn.manifold import TSNE
+
 
 def yaml_loader(yaml_file):
     with open(yaml_file,'r') as f:
@@ -26,6 +28,37 @@ def progress(current, total, **kwargs):
     print(f" |{chr(9608)* progress_percent_int}{' '*(50-progress_percent_int)}|{current}/{total}|{data_}",end='\r')
     if (current == total):
         print()
+
+def make_tsne_for_dataset(model, loader, device, algo, return_logs = False, tsne_name = None):
+    model.eval()
+
+    all_features = []
+    all_labels = []
+
+    with torch.no_grad():
+        loader_len = len(loader)
+        for idx,(x,y) in enumerate(loader):
+            x = x.to(device)
+            y = y.to(device)
+
+            if algo == 'simsiam':
+                feats, _, _ = model(x)
+            else:
+                feats, _ = model(x)
+
+            all_features.append(feats)
+            all_labels.append(y)
+
+            if return_logs:
+                progress(idx+1,loader_len)
+
+    features = torch.vstack(all_features)
+    labels = torch.hstack(all_labels)
+
+    print(features.shape)
+    print(labels.shape)
+
+    make_tsne_plot(features, labels, name = tsne_name)
 
 def evaluate(model, mlp, loader, device, return_logs=False, algo=None):
     model.eval()
@@ -119,7 +152,7 @@ def train_supcon(
         train_algo, model, mlp, train_loader, train_loader_mlp,
         test_loader, lossfunction, lossfunction_mlp, 
         optimizer, mlp_optimizer, opt_lr_schedular, 
-        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
+        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, tsne_name, return_logs=False): 
     
 
     print(f"### {train_algo} Training begins")
@@ -158,8 +191,10 @@ def train_supcon(
             
         print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
 
-    print("### MLP training begins")
+    print("### TSNE starts")
+    make_tsne_for_dataset(model, test_loader, device_id, train_algo, return_logs = return_logs, tsne_name = tsne_name)
 
+    print("### MLP training begins")
     train_mlp(
         model, mlp, train_loader_mlp, test_loader, 
         lossfunction_mlp, mlp_optimizer, n_epochs_mlp, eval_every,
@@ -171,7 +206,7 @@ def train_simsiam(
         model, mlp, train_loader, train_loader_mlp,
         test_loader, lossfunction, lossfunction_mlp, 
         optimizer, mlp_optimizer, opt_lr_schedular, 
-        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
+        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, tsne_name, return_logs=False): 
     
 
     print(f"### simsiam Training begins")
@@ -203,6 +238,9 @@ def train_simsiam(
             
         print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
 
+    print("### TSNE starts")
+    make_tsne_for_dataset(model, test_loader, device_id, 'simsiam', return_logs = return_logs, tsne_name = tsne_name)
+
     print("### MLP training begins")
 
     train_mlp(
@@ -216,7 +254,7 @@ def train_byol(
         online_model, target_model, online_pred_model, mlp, train_loader, train_loader_mlp,
         test_loader, lossfunction, lossfunction_mlp, 
         optimizer, mlp_optimizer, opt_lr_schedular, ema_beta, 
-        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
+        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, tsne_name, return_logs=False): 
     
 
     print(f"### byol Training begins")
@@ -262,6 +300,9 @@ def train_byol(
             
         print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
 
+    print("### TSNE starts")
+    make_tsne_for_dataset(model, test_loader, device_id, 'byol', return_logs = return_logs, tsne_name = tsne_name)
+
     print("### MLP training begins")
 
     train_mlp(
@@ -275,7 +316,7 @@ def train_triplet(
         model, mlp, train_loader, train_loader_mlp,
         test_loader, lossfunction, lossfunction_mlp, 
         optimizer, mlp_optimizer, opt_lr_schedular, 
-        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
+        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, tsne_name, return_logs=False): 
     
     print(f"### Triplet Training begins")
 
@@ -310,6 +351,9 @@ def train_triplet(
               
         print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
 
+    print("### TSNE starts")
+    make_tsne_for_dataset(model, test_loader, device_id, 'triplet', return_logs = return_logs, tsne_name = tsne_name)
+
     print("### MLP training begins")
 
     train_mlp(
@@ -323,7 +367,7 @@ def train_barlow_twins(
         model, mlp, train_loader, train_loader_mlp,
         test_loader, lossfunction, lossfunction_mlp, 
         optimizer, mlp_optimizer, opt_lr_schedular, 
-        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, return_logs=False): 
+        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, tsne_name, return_logs=False): 
     
     print(f"### Barlow Twins Training begins")
 
@@ -354,6 +398,9 @@ def train_barlow_twins(
         opt_lr_schedular.step()
               
         print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
+
+    print("### TSNE starts")
+    make_tsne_for_dataset(model, test_loader, device_id, 'barlow_twins', return_logs = return_logs, tsne_name = tsne_name)
 
     print("### MLP training begins")
 
@@ -422,3 +469,15 @@ class EMA():
         self.tau = 1 - (1 - self.tau_base) * (math.cos(math.pi * k / self.K) + 1) / 2
         return copy.deepcopy(target) 
 
+def make_tsne_plot(X, y, name):
+    tsne = TSNE(n_components=2, random_state=0)
+    X_embedded = tsne.fit_transform(X)
+
+    plt.figure(figsize=(8, 6))
+    plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=y, cmap='viridis')  # Color by labels
+    plt.title("t-SNE")
+    plt.xlabel("t-SNE Component 1")
+    plt.ylabel("t-SNE Component 2")
+    plt.colorbar(label="Labels")
+    plt.savefig(f"plots/{name}")
+    plt.close()
