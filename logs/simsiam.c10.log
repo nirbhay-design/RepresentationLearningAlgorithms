@@ -30,3 +30,24 @@ Files already downloaded and verified
 # of Training Images: 50000
 # of Testing Images: 10000
 ### simsiam Training begins
+[GPU6] epochs: [1/800] train_loss_con: -0.631
+[GPU6] epochs: [2/800] train_loss_con: -0.878
+[GPU6] epochs: [3/800] train_loss_con: -0.829
+[GPU6] epochs: [4/800] train_loss_con: -0.775
+[GPU6] epochs: [5/800] train_loss_con: -0.787
+[GPU6] epochs: [6/800] train_loss_con: -0.791
+[GPU6] epochs: [7/800] train_loss_con: -0.757
+[GPU6] epochs: [8/800] train_loss_con: -0.709
+[GPU6] epochs: [9/800] train_loss_con: -0.695
+[GPU6] epochs: [10/800] train_loss_con: -0.700
+[GPU6] epochs: [11/800] train_loss_con: -0.709
+[GPU6] epochs: [12/800] train_loss_con: -0.714
+[GPU6] epochs: [13/800] train_loss_con: -0.717
+[GPU6] epochs: [14/800] train_loss_con: -0.696
+[GPU6] epochs: [15/800] train_loss_con: -0.692
+[GPU6] epochs: [16/800] train_loss_con: -0.727
+[GPU6] epochs: [17/800] train_loss_con: -0.717
+[GPU6] epochs: [18/800] train_loss_con: -0.684
+[GPU6] epochs: [19/800] train_loss_con: -0.687
+[GPU6] epochs: [20/800] train_loss_con: -0.700
+[GPU6] epochs: [21/800] train_loss_con: -0.703

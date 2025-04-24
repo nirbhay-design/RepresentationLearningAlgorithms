@@ -33,3 +33,21 @@ Files already downloaded and verified
 # of Testing Images: 10000
 ### byol Training begins
 [GPU5] epochs: [1/800] train_loss_con: -2.492
+[GPU5] epochs: [2/800] train_loss_con: -3.246
+[GPU5] epochs: [3/800] train_loss_con: -3.945
+[GPU5] epochs: [4/800] train_loss_con: -3.950
+[GPU5] epochs: [5/800] train_loss_con: -3.959
+[GPU5] epochs: [6/800] train_loss_con: -3.916
+[GPU5] epochs: [7/800] train_loss_con: -3.968
+[GPU5] epochs: [8/800] train_loss_con: -3.917
+[GPU5] epochs: [9/800] train_loss_con: -3.856
+[GPU5] epochs: [10/800] train_loss_con: -3.627
+[GPU5] epochs: [11/800] train_loss_con: -3.575
+[GPU5] epochs: [12/800] train_loss_con: -3.502
+[GPU5] epochs: [13/800] train_loss_con: -3.576
+[GPU5] epochs: [14/800] train_loss_con: -3.475
+[GPU5] epochs: [15/800] train_loss_con: -3.565
+[GPU5] epochs: [16/800] train_loss_con: -3.634
+[GPU5] epochs: [17/800] train_loss_con: -3.585
+[GPU5] epochs: [18/800] train_loss_con: -3.599
+[GPU5] epochs: [19/800] train_loss_con: -3.611

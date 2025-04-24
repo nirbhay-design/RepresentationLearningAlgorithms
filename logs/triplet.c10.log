@@ -32,3 +32,20 @@ Files already downloaded and verified
 # of Testing Images: 10000
 ### Triplet Training begins
 [GPU4] epochs: [1/350] train_loss_con: 0.971
+[GPU4] epochs: [2/350] train_loss_con: 0.871
+[GPU4] epochs: [3/350] train_loss_con: 0.846
+[GPU4] epochs: [4/350] train_loss_con: 0.830
+[GPU4] epochs: [5/350] train_loss_con: 0.822
+[GPU4] epochs: [6/350] train_loss_con: 0.807
+[GPU4] epochs: [7/350] train_loss_con: 0.803
+[GPU4] epochs: [8/350] train_loss_con: 0.797
+[GPU4] epochs: [9/350] train_loss_con: 0.787
+[GPU4] epochs: [10/350] train_loss_con: 0.793
+[GPU4] epochs: [11/350] train_loss_con: 0.783
+[GPU4] epochs: [12/350] train_loss_con: 0.773
+[GPU4] epochs: [13/350] train_loss_con: 0.768
+[GPU4] epochs: [14/350] train_loss_con: 0.767
+[GPU4] epochs: [15/350] train_loss_con: 0.754
+[GPU4] epochs: [16/350] train_loss_con: 0.757
+[GPU4] epochs: [17/350] train_loss_con: 0.749
+[GPU4] epochs: [18/350] train_loss_con: 0.746
