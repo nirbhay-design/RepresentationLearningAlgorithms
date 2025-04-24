@@ -66,9 +66,7 @@ def main_single():
     n_epochs_mlp = config['n_epochs_mlp']
     device = config['gpu_id']
 
-    tsne_name = "_".join(sys.argv[1].split('.')[:-1])
-
-    print(tsne_name)
+    tsne_name = "_".join(sys.argv[1].split('/')[-1].split('.')[:-1]) + f"_{config['model_params']['model_name']}.png"
 
     ## defining parameter configs for each training algorithm
     param_config = {"train_algo": train_algo, "model": model, "mlp": mlp, "train_loader": train_dl, "train_loader_mlp": train_dl_mlp,
@@ -110,7 +108,7 @@ if __name__ == "__main__":
     args = sys.argv
     if '--gpu' in args:
         idx = args.index('--gpu')
-        config['gpu_id'] = args[idx+1]
+        config['gpu_id'] = int(args[idx+1])
     if '--model' in args:
         idx = args.index('--model')
         config['model_params']['model_name'] = args[idx+1]

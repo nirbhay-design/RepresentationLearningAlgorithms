@@ -11,6 +11,7 @@ from src.data import *
 import math
 import copy
 from sklearn.manifold import TSNE
+import matplotlib.pyplot as plt 
 
 
 def yaml_loader(yaml_file):
@@ -52,11 +53,8 @@ def make_tsne_for_dataset(model, loader, device, algo, return_logs = False, tsne
             if return_logs:
                 progress(idx+1,loader_len)
 
-    features = torch.vstack(all_features)
-    labels = torch.hstack(all_labels)
-
-    print(features.shape)
-    print(labels.shape)
+    features = torch.vstack(all_features).detach().cpu().numpy()
+    labels = torch.hstack(all_labels).detach().cpu().numpy()
 
     make_tsne_plot(features, labels, name = tsne_name)
 
@@ -474,7 +472,7 @@ def make_tsne_plot(X, y, name):
     X_embedded = tsne.fit_transform(X)
 
     plt.figure(figsize=(8, 6))
-    plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=y, cmap='viridis')  # Color by labels
+    plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=y, cmap='tab10')  # Color by labels
     plt.title("t-SNE")
     plt.xlabel("t-SNE Component 1")
     plt.ylabel("t-SNE Component 2")
