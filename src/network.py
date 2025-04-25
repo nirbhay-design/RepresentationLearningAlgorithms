@@ -106,6 +106,19 @@ class Network(nn.Module):
             return features, proj_features, pred_features # features, proj - z, pred - p
         return features, proj_features # 2048/512, 128 proj
 
+class VAE_linear(nn.Module):
+    def __init__(self, input_dim, output_dim):
+        super().__init__()
+        self.ip = input_dim
+        self.out = output_dim
+        self.linear_mu = nn.Linear(self.ip, self.out)
+        self.linear_var = nn.Linear(self.ip, self.out)
+
+    def forward(x):
+        mu =  self.linear_mu(x)
+        log_var = self.linear_var(x)
+        return mu, log_var
+
 if __name__ == "__main__":
     network = Network(model_name = 'resnet50', pretrained=False, algo_type='byol', byol_hidden = 4096, proj_dim = 256)
     mlp = MLP(network.classifier_infeatures, num_classes=10, mlp_type='hidden')

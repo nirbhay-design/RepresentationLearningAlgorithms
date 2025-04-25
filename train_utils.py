@@ -299,7 +299,7 @@ def train_byol(
         print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
 
     print("### TSNE starts")
-    make_tsne_for_dataset(model, test_loader, device_id, 'byol', return_logs = return_logs, tsne_name = tsne_name)
+    make_tsne_for_dataset(online_model, test_loader, device_id, 'byol', return_logs = return_logs, tsne_name = tsne_name)
 
     print("### MLP training begins")
 
