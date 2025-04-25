@@ -188,6 +188,15 @@ class BarlowTwinLoss(nn.Module):
 
         return diag_elem.sum() + self.lambd * diff.sum()
 
+class JSDDistAlign(nn.Module):
+    def __init__(self):
+        super().__init__()
+
+    
+
+    def forward(self):
+        pass 
+
 if __name__ == "__main__":
     scl = SupConClsLoss()
     tml = TripletMarginCELoss()
