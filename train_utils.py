@@ -409,6 +409,59 @@ def train_barlow_twins(
 
     return model
 
+def train_DARe(
+        model, mlp, vae_linear, train_loader, train_loader_mlp,
+        test_loader, lossfunction, lossfunction_mlp, 
+        optimizer, mlp_optimizer, opt_lr_schedular, 
+        eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, tsne_name, return_logs=False): 
+    
+    print(f"### DARe Training begins")
+
+    device = torch.device(f"cuda:{device_id}")
+    model = model.to(device)
+    vae_linear = vae_linear.to(device)
+    for epochs in range(n_epochs):
+        model.train()
+        vae_linear.train()
+        cur_loss = 0
+        len_train = len(train_loader)
+        for idx , (data, data_cap, target) in enumerate(train_loader):
+            data = data.to(device)
+            data_cap = data_cap.to(device)
+            
+            feats, proj_feat = model(data)
+            feats_cap, proj_feat_cap = model(data_cap)
+
+            mu, log_var = vae_linear(feats)
+            mu_cap, log_var_cap = vae_linear(feats_cap)
+
+            loss_con = lossfunction(proj_feat, proj_feat_cap, mu, mu_cap, log_var, log_var_cap)
+            
+            optimizer.zero_grad()
+            loss_con.backward()
+            optimizer.step()
+
+            cur_loss += loss_con.item() / (len_train)
+            
+            if return_logs:
+                progress(idx+1,len(train_loader), loss_con=loss_con.item(), GPU = device_id)
+        
+        opt_lr_schedular.step()
+              
+        print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
+
+    print("### TSNE starts")
+    make_tsne_for_dataset(model, test_loader, device_id, 'DARe', return_logs = return_logs, tsne_name = tsne_name)
+
+    print("### MLP training begins")
+
+    train_mlp(
+        model, mlp, train_loader_mlp, test_loader, 
+        lossfunction_mlp, mlp_optimizer, n_epochs_mlp, eval_every,
+        device_id, eval_id, return_logs = return_logs)
+
+    return model
+
 def loss_function(loss_type = 'supcon', **kwargs):
     print(f"loss function: {loss_type}")
     loss_mlp = nn.CrossEntropyLoss()
@@ -424,6 +477,8 @@ def loss_function(loss_type = 'supcon', **kwargs):
         return BYOLLoss(), loss_mlp
     elif loss_type == "barlow_twins":
         return BarlowTwinLoss(**kwargs), loss_mlp
+    elif loss_type == "dare":
+        return DAReLoss(**kwargs), loss_mlp
     else:
         print("{loss_type} Loss is Not Supported")
         return None 

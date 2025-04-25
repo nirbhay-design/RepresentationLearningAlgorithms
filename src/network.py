@@ -1,6 +1,7 @@
 import torch 
 import torchvision 
 import torch.nn as nn 
+import torch.nn.functional as F
 
 class MLP(nn.Module):
     def __init__(self, in_features, num_classes, mlp_type="linear"):
@@ -114,9 +115,13 @@ class VAE_linear(nn.Module):
         self.linear_mu = nn.Linear(self.ip, self.out)
         self.linear_var = nn.Linear(self.ip, self.out)
 
-    def forward(x):
+    def forward(self, x):
         mu =  self.linear_mu(x)
         log_var = self.linear_var(x)
+
+        mu = F.normalize(mu, dim = 1, p = 2)
+        log_var = F.normalize(log_var, dim = 1, p = 2)
+
         return mu, log_var
 
 if __name__ == "__main__":

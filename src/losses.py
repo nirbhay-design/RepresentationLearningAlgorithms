@@ -188,19 +188,43 @@ class BarlowTwinLoss(nn.Module):
 
         return diag_elem.sum() + self.lambd * diff.sum()
 
-class JSDDistAlign(nn.Module):
-    def __init__(self):
+class DAReLoss(nn.Module):
+    def __init__(self, lambd = 1.0, **kwargs):
         super().__init__()
+        self.base_loss = SimCLR(**kwargs)
+        self.lam = lambd 
 
-    
+    def forward(self, x, x_cap, mu, mu_cap, log_var, log_var_cap):
+        base_loss = self.base_loss(x, x_cap)
+        distribution_align = self.dist_align(mu, mu_cap, log_var, log_var_cap)
+        return base_loss + self.lam * distribution_align
 
-    def forward(self):
-        pass 
+    def dist_align(self, mu1, mu2, log_var1, log_var2):
+        mu_m = 0.5 * (mu1 + mu2)
+        log_varm = torch.log(0.5 * (torch.exp(log_var1) + torch.exp(log_var2)) + 1e-8)
+
+        kl1 = self.kl_div(mu1, mu_m, log_var1, log_varm)
+        kl2 = self.kl_div(mu2, mu_m, log_var2, log_varm)
+
+        jsd = 0.5 * (kl1 + kl2)
+        return jsd.mean() 
+
+    def kl_div(self, mu1, mu2, logvar1, logvar2):
+        # mu: [B, D]
+        var1 = torch.exp(logvar1)
+        var2 = torch.exp(logvar2)
+        var_div = torch.div(var1 + 1e-8, var2 + 1e-8)
+        part1 = var_div # [B,D]
+        part2 = (logvar2 - logvar1) # [B,D]
+        part3 = ((mu1 - mu2).pow(2) / (var2 + 1e-8)) # [B,D]
+
+        return 0.5 * (part1 + part2 + part3).sum(dim = 1) # [B]
 
 if __name__ == "__main__":
     scl = SupConClsLoss()
     tml = TripletMarginCELoss()
     sclr = SimCLRClsLoss()
+    dare = DAReLoss()
 
     features = torch.rand(10,5)
     features_cap = torch.rand(10,5)
@@ -214,6 +238,8 @@ if __name__ == "__main__":
     print(scl(features, features_cap, scores, labels))
     print(sclr(features, features_cap, scores, labels))
     print(tml(features, features_p, features_n, scores, labels))
+
+    print(dare(features, features_cap, torch.rand(10,128), torch.rand(10,128), torch.rand(10,128), torch.rand(10,128)))
 
     # implement bhattacharya as measure of similarity
 

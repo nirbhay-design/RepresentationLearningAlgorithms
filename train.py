@@ -3,9 +3,9 @@ import torch
 import torch.nn.functional as F
 import torch.optim as optim
 import numpy as np
-from src.network import Network, MLP, BYOL_mlp
+from src.network import Network, MLP, BYOL_mlp, VAE_linear
 from train_utils import yaml_loader, train_supcon, train_triplet, train_simsiam, \
-                        train_byol, train_barlow_twins, model_optimizer, \
+                        train_byol, train_barlow_twins, train_DARe, model_optimizer, \
                         loss_function, \
                         load_dataset
 
@@ -33,6 +33,8 @@ def train_network(**kwargs):
         train_byol(**kwargs)
     elif train_algo == "barlow_twins":
         train_barlow_twins(**kwargs)
+    elif train_algo == "dare":
+        train_DARe(**kwargs)
 
 def main_single():
     train_algo = config['train_algo']
@@ -43,6 +45,8 @@ def main_single():
     pred_net = None 
     if train_algo == "byol":
         pred_net = BYOL_mlp(**config["byol_pred_params"])
+    elif train_algo == "dare":
+        pred_net = VAE_linear(input_dim = model.classifier_infeatures, output_dim = config['vae_linear_out'])
 
     optimizer = model_optimizer(model, config['opt'], pred_net, **config['opt_params'])
     mlp_optimizer = model_optimizer(mlp, config['mlp_opt'], **config['mlp_opt_params'])
@@ -90,6 +94,8 @@ def main_single():
         param_config["target_model"] = target_net 
         param_config["online_pred_model"] = pred_net 
         param_config["ema_beta"] = ema_tau
+    elif train_algo == "dare":
+        param_config["vae_linear"] = pred_net 
 
     train_network(**param_config)
 
