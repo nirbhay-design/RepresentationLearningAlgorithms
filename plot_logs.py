@@ -17,7 +17,7 @@ def load_log_file(filepath):
 
 def plot_loss_test_accuracy(data_dir):
     filenames = os.listdir(data_dir)
-    filenames.remove("byol.c10.log")
+    filenames.remove("dare.c10.log")
     all_files = list(map(lambda x: os.path.join(data_dir, x), filenames))
     all_files_data = {}
     keywords_found = 0
