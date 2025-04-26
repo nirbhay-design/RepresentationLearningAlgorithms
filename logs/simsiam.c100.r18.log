@@ -1,0 +1,32 @@
+environment: 
+YAML: configs/simsiam.c100.yaml
+==> SEED: 42
+==> num_classes: 100
+==> data_name: cifar100
+==> data_params: {'algo': 'simsiam', 'data_dir': 'datasets/cifar100', 'batch_size': 512, 'num_workers': 3, 'image_size': 32}
+==> return_logs: False
+==> eval_every: 10
+==> n_epochs: 800
+==> n_epochs_mlp: 100
+==> gpu_id: 1
+==> opt: SGD
+==> opt_params: {'lr': 0.06, 'momentum': 0.9, 'weight_decay': 0.0001}
+==> schedular_params: {'T_max': 800, 'eta_min': 0.001}
+==> mlp_opt: SGD
+==> mlp_opt_params: {'lr': 0.1, 'momentum': 0.9}
+==> model_params: {'model_name': 'resnet18', 'pretrained': False, 'proj_dim': 128, 'algo_type': 'simsiam', 'pred_dim': 512}
+==> mlp_type: hidden
+==> loss: simsiam
+==> distributed: False
+==> train_algo: simsiam
+--------------------------------------------------
+===> using hiddin mlp
+using optimizer: SGD
+using optimizer: SGD
+loss function: simsiam
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified
+# of Training Images: 50000
+# of Testing Images: 10000
+### simsiam Training begins

@@ -1,0 +1,34 @@
+environment: 
+YAML: configs/supcon.c100.yaml
+==> SEED: 42
+==> num_classes: 100
+==> data_name: cifar100
+==> data_params: {'algo': 'supcon', 'data_dir': 'datasets/cifar100', 'batch_size': 512, 'num_workers': 3, 'image_size': 32}
+==> return_logs: False
+==> eval_every: 10
+==> n_epochs: 350
+==> n_epochs_mlp: 100
+==> gpu_id: 1
+==> opt: SGD
+==> opt_params: {'lr': 0.5, 'momentum': 0.9, 'nesterov': True}
+==> schedular_params: {'T_max': 350, 'eta_min': 0.001}
+==> mlp_opt: SGD
+==> mlp_opt_params: {'lr': 0.01, 'momentum': 0.9, 'nesterov': True}
+==> model_params: {'model_name': 'resnet18', 'pretrained': False, 'proj_dim': 128}
+==> mlp_type: hidden
+==> loss: supcon
+==> loss_params: {'sim': 'cosine', 'tau': 0.1}
+==> distributed: False
+==> train_algo: supcon
+--------------------------------------------------
+===> using hiddin mlp
+using optimizer: SGD
+using optimizer: SGD
+loss function: supcon
+Files already downloaded and verified
+Files already downloaded and verified
+Files already downloaded and verified
+# of Training Images: 50000
+# of Testing Images: 10000
+### supcon Training begins
+[GPU1] epochs: [1/350] train_loss_con: 6.823
