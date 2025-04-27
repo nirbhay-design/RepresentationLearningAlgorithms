@@ -32,19 +32,19 @@
 
 ## **Loss Plots**
 
-[](loss_plots/barlow_twins.png)
+![](loss_plots/barlow_twins.png)
 
-[](loss_plots/byol.png)
+![](loss_plots/byol.png)
 
-[](loss_plots/simclr.png)
+![](loss_plots/simclr.png)
 
-[](loss_plots/simsiam.png)
+![](loss_plots/simsiam.png)
 
-[](loss_plots/supcon.png)
+![](loss_plots/supcon.png)
 
-[](loss_plots/triplet.png)
+![](loss_plots/triplet.png)
 
-[](loss_plots/dare.png)
+![](loss_plots/dare.png)
 
 
 <!-- $$
