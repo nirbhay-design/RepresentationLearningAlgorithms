@@ -30,6 +30,10 @@
 
 - Knowledge Distillation Regularizer
 
+$$
+\sum_{i=1}^{n} p_i \log(i)
+$$
+
 ## **Team Members**
 
 - Mansi Tomer (SR: 24014)

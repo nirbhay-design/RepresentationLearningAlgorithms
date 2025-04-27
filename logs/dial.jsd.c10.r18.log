@@ -34,3 +34,19 @@ Files already downloaded and verified
 ### DiAl Training begins
 [GPU1] epochs: [1/500] train_loss_con: -0.122
 [GPU1] epochs: [2/500] train_loss_con: -0.166
+[GPU1] epochs: [3/500] train_loss_con: -0.182
+[GPU1] epochs: [4/500] train_loss_con: -0.188
+[GPU1] epochs: [5/500] train_loss_con: -0.201
+[GPU1] epochs: [6/500] train_loss_con: -0.204
+[GPU1] epochs: [7/500] train_loss_con: -0.210
+[GPU1] epochs: [8/500] train_loss_con: -0.214
+[GPU1] epochs: [9/500] train_loss_con: -0.217
+[GPU1] epochs: [10/500] train_loss_con: -0.219
+[GPU1] epochs: [11/500] train_loss_con: -0.224
+[GPU1] epochs: [12/500] train_loss_con: -0.227
+[GPU1] epochs: [13/500] train_loss_con: -0.229
+[GPU1] epochs: [14/500] train_loss_con: -0.230
+[GPU1] epochs: [15/500] train_loss_con: -0.236
+[GPU1] epochs: [16/500] train_loss_con: -0.235
+[GPU1] epochs: [17/500] train_loss_con: -0.238
+[GPU1] epochs: [18/500] train_loss_con: -0.241
