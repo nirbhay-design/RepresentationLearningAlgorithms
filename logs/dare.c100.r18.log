@@ -82,3 +82,7 @@ Files already downloaded and verified
 [GPU1] epochs: [48/500] train_loss_con: 1.610
 [GPU1] epochs: [49/500] train_loss_con: 1.596
 [GPU1] epochs: [50/500] train_loss_con: 1.586
+[GPU1] epochs: [51/500] train_loss_con: 1.588
+[GPU1] epochs: [52/500] train_loss_con: 1.578
+[GPU1] epochs: [53/500] train_loss_con: 1.560
+[GPU1] epochs: [54/500] train_loss_con: 1.562
