@@ -28,25 +28,18 @@
 
 ## **Extension**
 
-- Distribution Alignment (DiAl) contrastive learning 
-
-$$
-\mu_1, \log(\sigma_1^2) = f(x_1)
-$$
-
-$$
-\mu_2, \log(\sigma_2^2) = f(x_2)
-$$
+- Distribution Alignment Regularized (DARe) contrastive learning 
 
 $$
 \begin{align}
+\mu_1, \log(\sigma_1^2) = f(x_1) \\
+\mu_2, \log(\sigma_2^2) = f(x_2) \\
 z_1 = \mu_1 + \epsilon_1 \odot \sigma_1 \\
-z_2 = \mu_2 + \epsilon_2 \odot \sigma_2
+z_2 = \mu_2 + \epsilon_2 \odot \sigma_2 \\
+\mathcal{L} = \mathcal{L}_{\mathcal{CON}} + \lambda \mathcal{L}_{\mathcal{DAL}} \\
+\mathcal{L}_{\mathcal{CON}} = \sum_{} -log(\frac{e^{sim(z_{1i}, z_{2i})}}{\sum_{j \ne i} e^{sim(z_{1i}, z_{2j})}}) \\
+\mathcal{L}_{\mathcal{DAL}} = \mathcal{JSD}(\mathcal{N}(\mu_1, \sigma_1^2) || \mathcal{N}(\mu_2, \sigma_2^2))
 \end{align}
-$$
-
-$$
-\mathcal{L} = 
 $$
 
 
