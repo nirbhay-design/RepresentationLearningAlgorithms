@@ -28,7 +28,7 @@
 
 ## **Extension**
 
-- Knowledge Distillation Regularizer
+- Distribution Alignment (DiAl) contrastive learning 
 
 $$
 \sum_{i=1}^{n} p_i \log(i)

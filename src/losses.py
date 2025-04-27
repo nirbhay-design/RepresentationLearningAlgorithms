@@ -188,54 +188,120 @@ class BarlowTwinLoss(nn.Module):
 
         return diag_elem.sum() + self.lambd * diff.sum()
 
+# class DAReLoss(nn.Module):
+#     def __init__(self, lambd = 1.0, **kwargs):
+#         super().__init__()
+#         self.base_loss = SimCLR(**kwargs)
+#         self.lam = lambd 
+
+#     def forward(self, mu, mu_cap, log_var, log_var_cap):
+#         x = self.reparameterization(mu, log_var)
+#         x_cap = self.reparameterization(mu_cap, log_var_cap)
+#         base_loss = self.base_loss(x, x_cap)
+
+#         mu, log_var = self.normalize(mu, log_var)
+#         mu_cap, log_var_cap = self.normalize(mu_cap, log_var_cap)
+
+#         distribution_align = self.dist_align(mu, mu_cap, log_var, log_var_cap)
+#         return base_loss + self.lam * distribution_align
+
+#     def normalize(self, mu, log_var):
+#         mu = F.normalize(mu, dim = 1, p = 2)
+#         log_var = F.normalize(log_var, dim = 1, p = 2)
+#         return mu, log_var
+    
+#     def reparameterization(self, mu, log_var):
+#         var = torch.exp(0.5 * log_var)
+#         normal_ = torch.randn_like(var)
+#         sample = mu + var * normal_
+#         return sample 
+
+#     def dist_align(self, mu1, mu2, log_var1, log_var2):
+#         mu_m = 0.5 * (mu1 + mu2)
+#         log_varm = torch.log(0.5 * (torch.exp(log_var1) + torch.exp(log_var2)) + 1e-8)
+
+#         kl1 = self.kl_div(mu1, mu_m, log_var1, log_varm)
+#         kl2 = self.kl_div(mu2, mu_m, log_var2, log_varm)
+
+#         jsd = 0.5 * (kl1 + kl2)
+#         return jsd.mean() 
+
+#     def kl_div(self, mu1, mu2, logvar1, logvar2):
+#         # mu: [B, D]
+#         var1 = torch.exp(logvar1)
+#         var2 = torch.exp(logvar2)
+#         var_div = torch.div(var1 + 1e-8, var2 + 1e-8)
+#         part1 = var_div # [B,D]
+#         part2 = (logvar2 - logvar1) # [B,D]
+#         part3 = ((mu1 - mu2).pow(2) / (var2 + 1e-8)) # [B,D]
+
+#         return 0.5 * (part1 + part2 + part3 - 1).sum(dim = 1) # [B]
+
 class DAReLoss(nn.Module):
-    def __init__(self, lambd = 1.0, **kwargs):
+    def __init__(self, lambd=1.0, **kwargs):
         super().__init__()
         self.base_loss = SimCLR(**kwargs)
-        self.lam = lambd 
+        self.lam = lambd
 
     def forward(self, mu, mu_cap, log_var, log_var_cap):
+        log_var = torch.clamp(log_var, min=-10.0, max=10.0)
+        log_var_cap = torch.clamp(log_var_cap, min=-10.0, max=10.0)
+
+        mu = torch.clamp(mu, min=-20.0, max=20.0)
+        mu_cap = torch.clamp(mu_cap, min=-20.0, max=20.0)
+
         x = self.reparameterization(mu, log_var)
         x_cap = self.reparameterization(mu_cap, log_var_cap)
+
         base_loss = self.base_loss(x, x_cap)
 
-        mu, log_var = self.normalize(mu, log_var)
-        mu_cap, log_var_cap = self.normalize(mu_cap, log_var_cap)
+        mu = F.normalize(mu, dim=1, p=2)
+        mu_cap = F.normalize(mu_cap, dim=1, p=2)
 
         distribution_align = self.dist_align(mu, mu_cap, log_var, log_var_cap)
+
         return base_loss + self.lam * distribution_align
 
-    def normalize(self, mu, log_var):
-        mu = F.normalize(mu, dim = 1, p = 2)
-        log_var = F.normalize(log_var, dim = 1, p = 2)
-        return mu, log_var
-    
     def reparameterization(self, mu, log_var):
-        var = torch.exp(0.5 * log_var)
-        normal_ = torch.randn_like(var)
-        sample = mu + var * normal_
-        return sample 
+        std = torch.exp(0.5 * log_var)
+        std = torch.clamp(std, min=1e-3, max=1e3)  # Clamp std after exp
+        eps = torch.randn_like(std)
+        return mu + eps * std
 
     def dist_align(self, mu1, mu2, log_var1, log_var2):
+        var1 = torch.exp(log_var1)
+        var2 = torch.exp(log_var2)
+
+        var1 = torch.clamp(var1, min=1e-4, max=1e4)
+        var2 = torch.clamp(var2, min=1e-4, max=1e4)
+
         mu_m = 0.5 * (mu1 + mu2)
-        log_varm = torch.log(0.5 * (torch.exp(log_var1) + torch.exp(log_var2)) + 1e-8)
+        var_m = 0.5 * (var1 + var2)
+
+        log_varm = torch.log(var_m + 1e-8)
 
         kl1 = self.kl_div(mu1, mu_m, log_var1, log_varm)
         kl2 = self.kl_div(mu2, mu_m, log_var2, log_varm)
 
         jsd = 0.5 * (kl1 + kl2)
-        return jsd.mean() 
+        return jsd.mean()
 
     def kl_div(self, mu1, mu2, logvar1, logvar2):
-        # mu: [B, D]
         var1 = torch.exp(logvar1)
         var2 = torch.exp(logvar2)
-        var_div = torch.div(var1 + 1e-8, var2 + 1e-8)
-        part1 = var_div # [B,D]
-        part2 = (logvar2 - logvar1) # [B,D]
-        part3 = ((mu1 - mu2).pow(2) / (var2 + 1e-8)) # [B,D]
 
-        return 0.5 * (part1 + part2 + part3 - 1).sum(dim = 1) # [B]
+        var1 = torch.clamp(var1, min=1e-4, max=1e4)
+        var2 = torch.clamp(var2, min=1e-4, max=1e4)
+
+        var_div = torch.div(var1, var2)
+        part1 = var_div
+        part2 = (logvar2 - logvar1)
+        part3 = ((mu1 - mu2).pow(2)) / (var2 + 1e-8)
+
+        kl = 0.5 * (part1 + part2 + part3 - 1)
+
+        return kl.mean(dim=1)
+
 
 class BhattacharyaCL(nn.Module):
     def __init__(self, lambd=1.0):
