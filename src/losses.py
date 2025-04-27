@@ -220,6 +220,76 @@ class DAReLoss(nn.Module):
 
         return 0.5 * (part1 + part2 + part3).sum(dim = 1) # [B]
 
+class BhattacharyaCL(nn.Module):
+    def __init__(self, lambd=1.0):
+        super().__init__()
+        self.lambd = lambd
+
+    def forward(self, z1, z2):
+        p1 = F.softmax(z1, dim=-1)  # [B, D]
+        p2 = F.softmax(z2, dim=-1)  # [B, D]
+
+        # Compute pairwise Bhattacharyya coefficients
+        sqrt_p1 = p1.unsqueeze(1).sqrt()  # (B, 1, D)
+        sqrt_p2 = torch.sqrt(p2.unsqueeze(0))  # (1, B, D)
+        b_coeff = (sqrt_p1 * sqrt_p2).sum(dim=-1)  # (B, B)
+
+        # Positive loss: diagonal terms (i, i)
+        pos = torch.diagonal(b_coeff)  # (B,)
+        pos_loss = -torch.log(pos + 1e-8).mean()
+
+        # Negative loss: off-diagonal terms
+        mask = ~torch.eye(b_coeff.size(0), dtype=torch.bool, device=z1.device)
+        neg = b_coeff[mask]
+        neg_loss = torch.log(neg + 1e-8).mean()
+
+        total_loss = pos_loss + self.lambda_neg * neg_loss
+        return total_loss
+
+class JSDContrastiveLoss(nn.Module):
+    def __init__(self, lambda_neg=1.0):
+        """
+        Jensen-Shannon Divergence based Distributional Contrastive Loss.
+        Args:
+            lambda_neg: weight for negative loss term
+        """
+        super().__init__()
+        self.lambda_neg = lambda_neg
+
+    def forward(self, z1, z2):
+        """
+        Args:
+            z1: Tensor of shape (B, D) — embeddings from view 1
+            z2: Tensor of shape (B, D) — embeddings from view 2
+        Returns:
+            scalar loss
+        """
+        # Predict distributions using softmax
+        p1 = F.softmax(z1, dim=-1)  # (B, D)
+        p2 = F.softmax(z2, dim=-1)  # (B, D)
+
+        # Compute pairwise JSD
+        p1_exp = p1.unsqueeze(1)  # (B, 1, D)
+        p2_exp = p2.unsqueeze(0)  # (1, B, D)
+        m = 0.5 * (p1_exp + p2_exp)  # (B, B, D)
+
+        kl_p1_m = (p1_exp * (torch.log(p1_exp + 1e-8) - torch.log(m + 1e-8))).sum(dim=-1)  # (B, B)
+        kl_p2_m = (p2_exp * (torch.log(p2_exp + 1e-8) - torch.log(m + 1e-8))).sum(dim=-1)  # (B, B)
+        jsd_matrix = 0.5 * (kl_p1_m + kl_p2_m)  # (B, B)
+
+        # Positive loss: diagonal terms (i, i)
+        pos = torch.diagonal(jsd_matrix)  # (B,)
+        pos_loss = pos.mean()
+
+        # Negative loss: off-diagonal terms
+        mask = ~torch.eye(jsd_matrix.size(0), dtype=torch.bool, device=z1.device)
+        neg = jsd_matrix[mask]
+        neg_loss = -neg.mean()  # negate for pushing apart
+
+        total_loss = pos_loss + self.lambda_neg * neg_loss
+        return total_loss
+
+
 if __name__ == "__main__":
     scl = SupConClsLoss()
     tml = TripletMarginCELoss()
