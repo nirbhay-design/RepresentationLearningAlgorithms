@@ -5,7 +5,7 @@ import torch.optim as optim
 import numpy as np
 from src.network import Network, MLP, BYOL_mlp, VAE_linear
 from train_utils import yaml_loader, train_supcon, train_triplet, train_simsiam, \
-                        train_byol, train_barlow_twins, train_DARe, model_optimizer, \
+                        train_byol, train_barlow_twins, train_DARe, train_DiAl, model_optimizer, \
                         loss_function, \
                         load_dataset
 
@@ -35,6 +35,8 @@ def train_network(**kwargs):
         train_barlow_twins(**kwargs)
     elif train_algo == "dare":
         train_DARe(**kwargs)
+    elif train_algo == "dial":
+        train_DiAl(**kwargs)
 
 def main_single():
     train_algo = config['train_algo']

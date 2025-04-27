@@ -2,7 +2,7 @@ SEED: 42
 num_classes: 10
 data_name: cifar10
 data_params:
-  algo: dare
+  algo: dial
   data_dir: datasets/cifar10
   batch_size: 512
   num_workers: 3
@@ -33,11 +33,9 @@ model_params:
   pretrained: False 
   proj_dim: 128
 mlp_type: "hidden"
-loss: dare
-loss_params: 
-  sim: 'cosine'
-  tau: 0.5
+loss: dial
+loss_params:
+  sim_type: JSD
   lambd: 0.9
-vae_linear_out: 256
 distributed: False
-train_algo: dare
+train_algo: dial

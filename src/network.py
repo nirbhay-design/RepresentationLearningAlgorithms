@@ -118,10 +118,6 @@ class VAE_linear(nn.Module):
     def forward(self, x):
         mu =  self.linear_mu(x)
         log_var = self.linear_var(x)
-
-        mu = F.normalize(mu, dim = 1, p = 2)
-        log_var = F.normalize(log_var, dim = 1, p = 2)
-
         return mu, log_var
 
 if __name__ == "__main__":
