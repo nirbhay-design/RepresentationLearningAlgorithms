@@ -30,6 +30,23 @@
 
 - Distribution Alignment Regularizer (DARe) contrastive learning 
 
+## **Loss Plots**
+
+[](loss_plots/barlow_twins.png)
+
+[](loss_plots/byol.png)
+
+[](loss_plots/simclr.png)
+
+[](loss_plots/simsiam.png)
+
+[](loss_plots/supcon.png)
+
+[](loss_plots/triplet.png)
+
+[](loss_plots/dare.png)
+
+
 <!-- $$
 \begin{align}
 \mu_1, \log(\sigma_1^2) = f(x_1) \\
