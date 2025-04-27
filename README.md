@@ -24,15 +24,31 @@
 |Barlow Twins|81.2|47.7|80.3|45.8|
 |BYOL|83.0|47.0|84.8|54.8|
 |SimSiam|76.5|34.5|88.6|62.3|
-|Bhattacharya(Ours)|63.9|32.2|-|-|
+|DARe (Ours)|-|-|87.3|-|
 
 ## **Extension**
 
 - Distribution Alignment (DiAl) contrastive learning 
 
 $$
-\sum_{i=1}^{n} p_i \log(i)
+\mu_1, \log(\sigma_1^2) = f(x_1)
 $$
+
+$$
+\mu_2, \log(\sigma_2^2) = f(x_2)
+$$
+
+$$
+\begin{align}
+z_1 = \mu_1 + \epsilon_1 \odot \sigma_1 \\
+z_2 = \mu_2 + \epsilon_2 \odot \sigma_2
+\end{align}
+$$
+
+$$
+\mathcal{L} = 
+$$
+
 
 ## **Team Members**
 
