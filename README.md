@@ -36,7 +36,7 @@ $$
 \mu_2, \log(\sigma_2^2) = f(x_2) \\
 z_1 = \mu_1 + \epsilon_1 \odot \sigma_1 \\
 z_2 = \mu_2 + \epsilon_2 \odot \sigma_2 \\
-L = L_{CON} + \lambda L_{DAL} \\
+\mathcal{L} = L_{CON} + \lambda L_{DAL} \\
 \end{align}
 $$
 
