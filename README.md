@@ -28,9 +28,9 @@
 
 ## **Extension**
 
-- Distribution Alignment Regularized (DARe) contrastive learning 
+- Distribution Alignment Regularizer (DARe) contrastive learning 
 
-$$
+<!-- $$
 \begin{align}
 \mu_1, \log(\sigma_1^2) = f(x_1) \\
 \mu_2, \log(\sigma_2^2) = f(x_2) \\
@@ -39,7 +39,7 @@ z_2 = \mu_2 + \epsilon_2 \odot \sigma_2 \\
 \mathcal{L} = \mathcal{L}_{CON} + \lambda \mathcal{L}_{DAL} \\
 \mathcal{L}_{DAL} = JSD(N(\mu_1, \sigma_1^2 \mathcal{I}) | N(\mu_2, \sigma_2^2 \mathcal{I})) \\
 \end{align}
-$$
+$$ -->
 
 <!-- L_{CON} = \sum_{i} -log(\frac{e^{sim(z_{1i}, z_{2i})}}{\sum_{j \ne i} e^{sim(z_{1i}, z_{2j})}}) \\
 

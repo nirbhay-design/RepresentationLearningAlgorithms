@@ -13,43 +13,57 @@ def load_log_file(filepath):
                 if keyword in line:
                     keywords[keyword].append(float(split_line[-1]))
 
+    if any([len(x) == 0 for x in keywords.values()]):
+        raise Exception("This is issue")
+
     return keywords
 
 def plot_loss_test_accuracy(data_dir):
     filenames = os.listdir(data_dir)
-    # filenames.remove("dare.c10.log")
     all_files = list(map(lambda x: os.path.join(data_dir, x), filenames))
     all_files_data = {}
     keywords_found = 0
     keywords = {}
 
     for files in all_files:
-        all_files_data[files.split('/')[-1]] = load_log_file(files)
-        if not keywords_found:
-            keywords = list(all_files_data[files.split('/')[-1]].keys())
-            keywords_found = 1
+        try:
+            all_files_data[files.split('/')[-1]] = load_log_file(files)
+            if not keywords_found:
+                keywords = list(all_files_data[files.split('/')[-1]].keys())
+                keywords_found = 1
+        except:
+            print(f"{files} has some issue")
 
-    datanames = {'c10': [], 'c100': []}
+    
+    algo_datas = {}
 
     for file in all_files_data.keys():
-        algo, data = file.split(".")[:2]
+        algo, data, model = file.split(".")[:3]
+        if model == "log":
+            model = "r50"
+        combine = f"{data}.{model}"
         print(f"[{file}] Best Test Accuracy: algo: {algo}, dataset: {data}: {max(all_files_data[file]['Test Accuracy'])}")
-        datanames[data].append(file) 
+        if algo not in algo_datas:
+            algo_datas[algo] = {}
+        algo_datas[algo][combine] = all_files_data[file]['train_loss_con'] 
 
-#     for data, datafiles in datanames.items():
-#         k1 = "Test Accuracy"
-#         plot_based_on_keywords(data, k1, [all_files_data[i][k1] for i in datafiles], datafiles)
+    for algo, algo_data in algo_datas.items():
+        plot_based_on_keywords(algo, algo_data)
             
+def plot_based_on_keywords(algo, algo_data):
+    plt.figure()
 
-# def plot_based_on_keywords(dataname, keyword, keyword_data, filenames):
-#     plt.figure()
-#     for data, filename in zip(keyword_data, filenames):
-#         plt.plot(list(range(1,len(data) + 1)), data, label = f"{filename}")
-#     plt.xlabel("Iterations")
-#     plt.ylabel(keyword)
-#     plt.title(f"{keyword} vs Iterations for {dataname}")
-#     plt.legend()
-#     plt.savefig(f"plots/{keyword}_{dataname}.png")
+    # marker = ['^', 'v', '*', 'D']
+    # marker_map = dict(zip(algo_data.keys(), marker))
+    for keyword, data in algo_data.items():
+        plt.plot(list(range(1,len(data) + 1)), data, label = f"{keyword}", marker='o', markersize=3)
+    plt.grid(True, linestyle='--', linewidth=0.5)
+    plt.xlabel("Iterations")
+    plt.ylabel("Contrastive Loss")
+    plt.title(f"Loss vs Iterations for {algo}")
+    plt.legend()
+    plt.savefig(f"loss_plots/{algo}.png")
+    plt.close()
 
 if __name__ == "__main__":
     log_dir = sys.argv[1]
