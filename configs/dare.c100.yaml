@@ -1,5 +1,5 @@
 SEED: 42
-num_classes: 10
+num_classes: 100
 data_name: cifar100
 data_params:
   algo: dare
