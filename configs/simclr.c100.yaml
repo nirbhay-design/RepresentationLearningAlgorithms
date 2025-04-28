@@ -9,7 +9,7 @@ data_params:
   image_size: 32
 return_logs: False
 eval_every: 10
-n_epochs: &epoch 350
+n_epochs: &epoch 500
 n_epochs_mlp: 100
 gpu_id: 0
 opt: SGD
