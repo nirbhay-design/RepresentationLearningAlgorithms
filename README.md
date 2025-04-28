@@ -30,7 +30,9 @@
 
 - Distribution Alignment Regularizer (DARe) contrastive learning 
 
-## **Loss Plots**
+![](DARe.svg)
+
+<!-- ## **Loss Plots**
 
 ![](loss_plots/barlow_twins.png)
 
@@ -44,7 +46,7 @@
 
 ![](loss_plots/triplet.png)
 
-![](loss_plots/dare.png)
+![](loss_plots/dare.png) -->
 
 
 <!-- $$
