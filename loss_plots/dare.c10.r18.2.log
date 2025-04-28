@@ -33,3 +33,5 @@ Files already downloaded and verified
 # of Testing Images: 10000
 ### DARe Training begins
 [GPU1] epochs: [1/500] train_loss_con: 6.263
+[GPU1] epochs: [2/500] train_loss_con: 5.935
+[GPU1] epochs: [3/500] train_loss_con: 5.825

@@ -37,7 +37,7 @@ loss: dare
 loss_params: 
   sim: 'cosine'
   tau: 0.5
-  lambd: 0.0
+  lambd: 0.9
 vae_linear_out: 256
 distributed: False
 train_algo: dare
