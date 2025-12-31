@@ -29,3 +29,7 @@ loss function: simsiam
 # of Training Images: 50000
 # of Testing Images: 10000
 ### simsiam Training begins
+[GPU6] epochs: [1/350] train_loss_con: -0.512
+[GPU6] epochs: [2/350] train_loss_con: -0.622
+[GPU6] epochs: [3/350] train_loss_con: -0.649
+[GPU6] epochs: [4/350] train_loss_con: -0.664

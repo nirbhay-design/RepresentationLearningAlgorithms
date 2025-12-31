@@ -12,7 +12,7 @@ nohup python train.py --config configs/barlow_twins.c100.yaml --gpu 5 --model re
 
 # Experiment for byol 
 
-# nohup python train.py --config configs/byol.c10.yaml --gpu 3 --model resnet18 --epochs 350 --epochs_lin 100 --save_path byol.c10.r18.e350.pth > logs/byol.c10.r18.e350.log &
+nohup python train.py --config configs/byol.c10.yaml --gpu 3 --model resnet18 --epochs 350 --epochs_lin 100 --save_path byol.c10.r18.e350.pth > logs/byol.c10.r18.e350.log &
 
 # nohup python train.py --config configs/byol.c100.yaml --gpu 3 --model resnet18 --epochs 350 --epochs_lin 100 --save_path byol.c100.r18.e350.pth > logs/byol.c100.r18.e350.log &
 

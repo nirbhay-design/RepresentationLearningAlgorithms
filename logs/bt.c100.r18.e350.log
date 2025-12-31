@@ -30,3 +30,8 @@ loss function: barlow_twins
 # of Training Images: 50000
 # of Testing Images: 10000
 ### Barlow Twins Training begins
+[GPU3] epochs: [1/350] train_loss_con: 102.467
+[GPU3] epochs: [2/350] train_loss_con: 74.041
+[GPU3] epochs: [3/350] train_loss_con: 68.891
+[GPU3] epochs: [4/350] train_loss_con: 67.201
+[GPU3] epochs: [5/350] train_loss_con: 66.443
