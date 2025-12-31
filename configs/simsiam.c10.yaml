@@ -37,3 +37,4 @@ mlp_type: "hidden"
 loss: simsiam
 distributed: False
 train_algo: simsiam
+model_save_path: saved_models

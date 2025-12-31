@@ -1,0 +1,88 @@
+environment: 
+YAML: --config
+==> SEED: 42
+==> num_classes: 100
+==> data_name: cifar100
+==> data_params: {'algo': 'barlow_twins', 'data_dir': 'datasets/cifar100', 'batch_size': 512, 'num_workers': 3, 'image_size': 32}
+==> return_logs: False
+==> eval_every: 10
+==> n_epochs: 350
+==> n_epochs_mlp: 100
+==> gpu_id: 5
+==> opt: SGD
+==> opt_params: {'lr': 0.4, 'momentum': 0.9, 'weight_decay': 1.5e-06}
+==> schedular_params: {'T_max': 350, 'eta_min': 0.001}
+==> mlp_opt: SGD
+==> mlp_opt_params: {'lr': 0.01, 'momentum': 0.9}
+==> model_params: {'model_name': 'resnet50', 'pretrained': False, 'proj_dim': 256, 'barlow_hidden': 4096}
+==> mlp_type: hidden
+==> loss: barlow_twins
+==> loss_params: {'lambd': 0.005}
+==> distributed: False
+==> train_algo: barlow_twins
+==> model_save_path: saved_models/bt.c100.r50.e350.pth
+==> config: configs/barlow_twins.c100.yaml
+--------------------------------------------------
+===> using hiddin mlp
+using optimizer: SGD
+using optimizer: SGD
+loss function: barlow_twins
+Traceback (most recent call last):
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 1348, in do_open
+    h.request(req.get_method(), req.selector, req.data, headers,
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/http/client.py", line 1283, in request
+    self._send_request(method, url, body, headers, encode_chunked)
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/http/client.py", line 1329, in _send_request
+    self.endheaders(body, encode_chunked=encode_chunked)
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/http/client.py", line 1278, in endheaders
+    self._send_output(message_body, encode_chunked=encode_chunked)
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/http/client.py", line 1038, in _send_output
+    self.send(msg)
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/http/client.py", line 976, in send
+    self.connect()
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/http/client.py", line 1455, in connect
+    self.sock = self._context.wrap_socket(self.sock,
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/ssl.py", line 513, in wrap_socket
+    return self.sslsocket_class._create(
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/ssl.py", line 1104, in _create
+    self.do_handshake()
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/ssl.py", line 1375, in do_handshake
+    self._sslobj.do_handshake()
+ssl.SSLCertVerificationError: [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1017)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/nirbhays/RepresentationLearningAlgorithms/train.py", line 167, in <module>
+    main_single()
+  File "/home/nirbhays/RepresentationLearningAlgorithms/train.py", line 79, in main_single
+    train_dl, train_dl_mlp, test_dl, train_ds, test_ds = load_dataset(
+  File "/home/nirbhays/RepresentationLearningAlgorithms/train_utils.py", line 558, in load_dataset
+    return Cifar100DataLoader(**kwargs)
+  File "/home/nirbhays/RepresentationLearningAlgorithms/src/data.py", line 116, in Cifar100DataLoader
+    train_dataset = DataCifar(
+  File "/home/nirbhays/RepresentationLearningAlgorithms/src/data.py", line 59, in __init__
+    self.data = torchvision.datasets.CIFAR100(data_dir, train = True, download = True)
+  File "/home/nirbhays/envs/mlenv/lib/python3.10/site-packages/torchvision/datasets/cifar.py", line 66, in __init__
+    self.download()
+  File "/home/nirbhays/envs/mlenv/lib/python3.10/site-packages/torchvision/datasets/cifar.py", line 139, in download
+    download_and_extract_archive(self.url, self.root, filename=self.filename, md5=self.tgz_md5)
+  File "/home/nirbhays/envs/mlenv/lib/python3.10/site-packages/torchvision/datasets/utils.py", line 388, in download_and_extract_archive
+    download_url(url, download_root, filename, md5)
+  File "/home/nirbhays/envs/mlenv/lib/python3.10/site-packages/torchvision/datasets/utils.py", line 118, in download_url
+    url = _get_redirect_url(url, max_hops=max_redirect_hops)
+  File "/home/nirbhays/envs/mlenv/lib/python3.10/site-packages/torchvision/datasets/utils.py", line 63, in _get_redirect_url
+    with urllib.request.urlopen(urllib.request.Request(url, headers=headers)) as response:
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 216, in urlopen
+    return opener.open(url, data, timeout)
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 519, in open
+    response = self._open(req, data)
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 536, in _open
+    result = self._call_chain(self.handle_open, protocol, protocol +
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 496, in _call_chain
+    result = func(*args)
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 1391, in https_open
+    return self.do_open(http.client.HTTPSConnection, req,
+  File "/home/nirbhays/.local/share/uv/python/cpython-3.10.19-linux-x86_64-gnu/lib/python3.10/urllib/request.py", line 1351, in do_open
+    raise URLError(err)
+urllib.error.URLError: <urlopen error [SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: unable to get local issuer certificate (_ssl.c:1017)>

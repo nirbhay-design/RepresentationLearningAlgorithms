@@ -13,6 +13,24 @@ import torch.multiprocessing as mp
 from torch.nn.parallel import DistributedDataParallel as DDP 
 from torch.distributed import init_process_group, destroy_process_group
 import os 
+import argparse 
+
+def get_args():
+    parser = argparse.ArgumentParser(description="Training script")
+
+    # basic experiment settings
+    parser.add_argument("--config", type=str, default = "configs/nodel.c10.yaml", required=True, help="config file")
+    parser.add_argument("--save_path", type=str, default="model.pth", required=True, help="path to save model")
+    parser.add_argument("--gpu", type=int, default = 0, help="gpu_id")
+    parser.add_argument("--model", type=str, default="resnet50", help="resnet18/resnet50")
+    parser.add_argument("--verbose", action="store_true", help="verbose or not")
+    parser.add_argument("--epochs", type=int, default = None, help="epochs for SSL pretraining")
+    parser.add_argument("--epochs_lin", type=int, default = None, help="epochs for linear probing")
+    parser.add_argument("--opt", type=str, default=None, help="SGD/ADAM/AdamW")
+    parser.add_argument("--lr", type=float, default = None, help="lr for SSL")
+
+    args = parser.parse_args()
+    return args
 
 def ddp_setup(rank, world_size):
     os.environ['MASTER_ADDR'] = 'localhost'
@@ -24,19 +42,20 @@ def train_network(**kwargs):
     kwargs.pop("train_algo")
     if train_algo == "supcon" or train_algo == "simclr":
         kwargs["train_algo"] = train_algo
-        train_supcon(**kwargs)
+        return train_supcon(**kwargs)
     elif train_algo == "triplet":
-        train_triplet(**kwargs)
+        return train_triplet(**kwargs)
     elif train_algo == "simsiam":
-        train_simsiam(**kwargs)
+        return train_simsiam(**kwargs)
     elif train_algo == 'byol':
-        train_byol(**kwargs)
+        return train_byol(**kwargs)
     elif train_algo == "barlow_twins":
-        train_barlow_twins(**kwargs)
+        return train_barlow_twins(**kwargs)
     elif train_algo == "dare":
-        train_DARe(**kwargs)
+        return train_DARe(**kwargs)
     elif train_algo == "dial":
-        train_DiAl(**kwargs)
+        return train_DiAl(**kwargs)
+    return None 
 
 def main_single():
     train_algo = config['train_algo']
@@ -72,7 +91,8 @@ def main_single():
     n_epochs_mlp = config['n_epochs_mlp']
     device = config['gpu_id']
 
-    tsne_name = "_".join(sys.argv[1].split('/')[-1].split('.')[:-1]) + f"_{config['model_params']['model_name']}.png"
+    tsne_name = "_".join(config["model_save_path"].split('/')[-1].split('.')[:-1]) + ".png"
+    # tsne_name = "_".join(sys.argv[1].split('/')[-1].split('.')[:-1]) + f"_{config['model_params']['model_name']}.png"
 
     ## defining parameter configs for each training algorithm
     param_config = {"train_algo": train_algo, "model": model, "mlp": mlp, "train_loader": train_dl, "train_loader_mlp": train_dl_mlp,
@@ -99,11 +119,35 @@ def main_single():
     elif train_algo == "dare":
         param_config["vae_linear"] = pred_net 
 
-    train_network(**param_config)
+    final_model = train_network(**param_config)
+
+    torch.save(final_model.state_dict(), config["model_save_path"])
+    print("Model weights saved")
 
 if __name__ == "__main__":
-    config = yaml_loader(sys.argv[1])
+    args = get_args()
+    config = yaml_loader(args.config)
+
+    config["config"] = args.config
+    config['gpu_id'] = args.gpu
+    config['model_params']['model_name'] = args.model
+    config["return_logs"] = args.verbose
+    config["model_save_path"] = os.path.join(config.get("model_save_path", "saved_models"), args.save_path)
+
+    if args.opt:
+        config["opt"] = args.opt
+        if args.opt in ["ADAM", "AdamW"]:
+            config["opt_params"].pop("momentum", -1)
+            config["opt_params"].pop("nesterov", -1)
+    if args.lr:
+        config["opt_params"]["lr"] = args.lr 
+    if args.epochs:
+        config["n_epochs"] = args.epochs
+        config["schedular_params"]["T_max"] = args.epochs
+    if args.epochs_lin:
+        config["n_epochs_mlp"] = args.epochs_lin
     
+    # setting random seeds 
     random.seed(config["SEED"])
     np.random.seed(config["SEED"])
     torch.manual_seed(config["SEED"])
@@ -112,14 +156,6 @@ if __name__ == "__main__":
     torch.backends.cudnn.deterministic = True
     torch.backends.cuda.matmul.allow_tf32 = True
     torch.backends.cudnn.allow_tf32 = True
-
-    args = sys.argv
-    if '--gpu' in args:
-        idx = args.index('--gpu')
-        config['gpu_id'] = int(args[idx+1])
-    if '--model' in args:
-        idx = args.index('--model')
-        config['model_params']['model_name'] = args[idx+1]
 
     print("environment: ")
     print(f"YAML: {sys.argv[1]}")

@@ -42,3 +42,4 @@ mlp_type: "hidden"
 loss: byol
 distributed: False
 train_algo: byol
+model_save_path: saved_models

@@ -38,3 +38,5 @@ loss_params:
   lambd: 0.005
 distributed: False
 train_algo: barlow_twins
+
+model_save_path: saved_models
