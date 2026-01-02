@@ -28,6 +28,7 @@ def get_args():
     parser.add_argument("--epochs_lin", type=int, default = None, help="epochs for linear probing")
     parser.add_argument("--opt", type=str, default=None, help="SGD/ADAM/AdamW")
     parser.add_argument("--lr", type=float, default = None, help="lr for SSL")
+    parser.add_argument("--mlp_type", type=str, default=None, help="hidden/linear")
 
     args = parser.parse_args()
     return args
@@ -146,6 +147,8 @@ if __name__ == "__main__":
         config["schedular_params"]["T_max"] = args.epochs
     if args.epochs_lin:
         config["n_epochs_mlp"] = args.epochs_lin
+    if args.mlp_type:
+        config["mlp_type"] = args.mlp_type
     
     # setting random seeds 
     random.seed(config["SEED"])

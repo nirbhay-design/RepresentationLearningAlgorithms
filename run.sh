@@ -32,10 +32,10 @@
 
 # Experiment for simclr
 
-# nohup python train.py --config configs/simclr.c10.yaml --gpu 2 --model resnet18 --epochs 350 --epochs_lin 100 --save_path simclr.c10.r18.e350.pth > logs/simclr.c10.r18.e350.log &
+nohup python train.py --config configs/simclr.c10.yaml --mlp_type linear --gpu 2 --model resnet18 --epochs 350 --epochs_lin 100 --save_path simclr.c10.r18.e350.pth > logs/simclr.c10.r18.e350.log &
 
-# nohup python train.py --config configs/simclr.c100.yaml --gpu 3 --model resnet18 --epochs 350 --epochs_lin 100 --save_path simclr.c100.r18.e350.pth > logs/simclr.c100.r18.e350.log &
+nohup python train.py --config configs/simclr.c100.yaml --mlp_type linear --gpu 2 --model resnet18 --epochs 350 --epochs_lin 100 --save_path simclr.c100.r18.e350.pth > logs/simclr.c100.r18.e350.log &
 
-# nohup python train.py --config configs/simclr.c10.yaml --gpu 2 --model resnet50 --epochs 350 --epochs_lin 100 --save_path simclr.c10.r50.e350.pth > logs/simclr.c10.r50.e350.log &
+nohup python train.py --config configs/simclr.c10.yaml --mlp_type linear --gpu 4 --model resnet50 --epochs 350 --epochs_lin 100 --save_path simclr.c10.r50.e350.pth > logs/simclr.c10.r50.e350.log &
 
-# nohup python train.py --config configs/simclr.c100.yaml --gpu 3 --model resnet50 --epochs 350 --epochs_lin 100 --save_path simclr.c100.r50.e350.pth > logs/simclr.c100.r50.e350.log &
+nohup python train.py --config configs/simclr.c100.yaml --mlp_type linear --gpu 6 --model resnet50 --epochs 350 --epochs_lin 100 --save_path simclr.c100.r50.e350.pth > logs/simclr.c100.r50.e350.log &
