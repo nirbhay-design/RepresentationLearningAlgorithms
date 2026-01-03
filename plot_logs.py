@@ -56,7 +56,7 @@ def plot_based_on_keywords(algo, algo_data):
     # marker = ['^', 'v', '*', 'D']
     # marker_map = dict(zip(algo_data.keys(), marker))
     for keyword, data in algo_data.items():
-        plt.plot(list(range(1,len(data) + 1)), data, label = f"{keyword}", marker='o', markersize=3)
+        plt.plot(list(range(1,len(data) + 1)), data, label = f"{keyword}")
     plt.grid(True, linestyle='--', linewidth=0.5)
     plt.xlabel("Iterations")
     plt.ylabel("Contrastive Loss")

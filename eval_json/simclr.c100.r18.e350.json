@@ -1,0 +1,50 @@
+{
+    "SEED": 42,
+    "num_classes": 100,
+    "data_name": "cifar100",
+    "data_params": {
+        "algo": "simclr",
+        "data_dir": "datasets/cifar100",
+        "batch_size": 512,
+        "num_workers": 3,
+        "image_size": 32
+    },
+    "return_logs": false,
+    "eval_every": 10,
+    "n_epochs": 350,
+    "n_epochs_mlp": 100,
+    "gpu_id": 2,
+    "opt": "SGD",
+    "opt_params": {
+        "lr": 0.5,
+        "momentum": 0.9,
+        "nesterov": true
+    },
+    "schedular_params": {
+        "T_max": 350,
+        "eta_min": 0.001
+    },
+    "mlp_opt": "SGD",
+    "mlp_opt_params": {
+        "lr": 0.01,
+        "momentum": 0.9,
+        "nesterov": true
+    },
+    "model_params": {
+        "model_name": "resnet18",
+        "pretrained": false,
+        "proj_dim": 128
+    },
+    "mlp_type": "linear",
+    "loss": "simclr",
+    "loss_params": {
+        "sim": "cosine",
+        "tau": 0.5
+    },
+    "distributed": false,
+    "train_algo": "simclr",
+    "config": "configs/simclr.c100.yaml",
+    "model_save_path": "saved_models/simclr.c100.r18.e350.pth",
+    "knn_acc": 0.4298,
+    "lreg_acc": 0.4977
+}

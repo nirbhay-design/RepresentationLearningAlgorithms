@@ -83,6 +83,7 @@ class Network(nn.Module):
             )
         elif algo_type == 'byol':
             self.proj = BYOL_mlp(in_features = self.classifier_infeatures, hidden_dim = byol_hidden, out_features = proj_dim)
+        
         elif algo_type == "barlow_twins":
             self.proj = nn.Sequential(
                 nn.Linear(self.classifier_infeatures, barlow_hidden, bias=False),
@@ -102,10 +103,13 @@ class Network(nn.Module):
         features = self.feat_extractor(x).flatten(1)
         proj_features = self.proj(features)
 
+        output = {"features": features, "proj_features": proj_features}
+
         if self.algo_type == 'simsiam':
             pred_features = self.pred(proj_features)
-            return features, proj_features, pred_features # features, proj - z, pred - p
-        return features, proj_features # 2048/512, 128 proj
+            output["pred_features"] = pred_features
+            # return features, proj_features, pred_features # features, proj - z, pred - p
+        return output # 2048/512, 128 proj
 
 class VAE_linear(nn.Module):
     def __init__(self, input_dim, output_dim):

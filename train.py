@@ -6,7 +6,7 @@ import numpy as np
 from src.network import Network, MLP, BYOL_mlp, VAE_linear
 from train_utils import yaml_loader, train_supcon, train_triplet, train_simsiam, \
                         train_byol, train_barlow_twins, train_DARe, train_DiAl, model_optimizer, \
-                        loss_function, \
+                        loss_function, get_tsne_knn_logreg, \
                         load_dataset
 
 import torch.multiprocessing as mp 
@@ -14,6 +14,7 @@ from torch.nn.parallel import DistributedDataParallel as DDP
 from torch.distributed import init_process_group, destroy_process_group
 import os 
 import argparse 
+import json 
 
 def get_args():
     parser = argparse.ArgumentParser(description="Training script")
@@ -28,7 +29,13 @@ def get_args():
     parser.add_argument("--epochs_lin", type=int, default = None, help="epochs for linear probing")
     parser.add_argument("--opt", type=str, default=None, help="SGD/ADAM/AdamW")
     parser.add_argument("--lr", type=float, default = None, help="lr for SSL")
+    parser.add_argument("--linear_lr", type=float, default = None, help="lr for linear probing")
+    # evaluation 
     parser.add_argument("--mlp_type", type=str, default=None, help="hidden/linear")
+    parser.add_argument("--test", action="store_true", help="test or not")
+    parser.add_argument("--knn", action="store_true", help="evaluate knn or not")
+    parser.add_argument("--lreg", action="store_true", help="evaluate logistic regression or not")
+    parser.add_argument("--tsne", action="store_true", help="get test tsne or not")
 
     args = parser.parse_args()
     return args
@@ -95,6 +102,23 @@ def main_single():
     tsne_name = "_".join(config["model_save_path"].split('/')[-1].split('.')[:-1]) + ".png"
     # tsne_name = "_".join(sys.argv[1].split('/')[-1].split('.')[:-1]) + f"_{config['model_params']['model_name']}.png"
 
+    if args.test:
+        print(model.load_state_dict(torch.load(config["model_save_path"], map_location="cpu")))
+        
+        test_config = {"model": model, "train_loader": train_dl_mlp, "test_loader": test_dl, 
+                       "device": device, "algo": train_algo, "return_logs": return_logs, 
+                       "tsne": args.tsne, "knn": args.knn, "log_reg": args.lreg, "tsne_name": tsne_name}
+        
+        output = get_tsne_knn_logreg(**test_config)
+        save_config = {**config, **output}
+        output_json = ".".join(config['model_save_path'].split('/')[-1].split('.')[:-1]) + '.json'
+        os.makedirs("eval_json", exist_ok=True)
+        with open(f"eval_json/{output_json}", "w") as f:
+            json.dump(save_config, f, indent=4)
+        print(f"knn_acc: {output['knn_acc']:.3f}, log_reg_acc: {output['lreg_acc']:.3f}")
+        return 
+
+
     ## defining parameter configs for each training algorithm
     param_config = {"train_algo": train_algo, "model": model, "mlp": mlp, "train_loader": train_dl, "train_loader_mlp": train_dl_mlp,
         "test_loader": test_dl, "lossfunction": loss, "lossfunction_mlp": loss_mlp, "optimizer": optimizer, 
@@ -124,6 +148,16 @@ def main_single():
 
     torch.save(final_model.state_dict(), config["model_save_path"])
     print("Model weights saved")
+
+    print(model.load_state_dict(torch.load(config["model_save_path"], map_location="cpu")))
+        
+    test_config = {"model": model, "train_loader": train_dl_mlp, "test_loader": test_dl, 
+                    "device": device, "algo": train_algo, "return_logs": return_logs, 
+                    "tsne": False, "knn": True, "log_reg": True, "tsne_name": tsne_name}
+    
+    output = get_tsne_knn_logreg(**test_config)
+    # print(output)
+    print(f"knn_acc: {output['knn_acc']:.3f}, log_reg_acc: {output['lreg_acc']:.3f}")
 
 if __name__ == "__main__":
     args = get_args()

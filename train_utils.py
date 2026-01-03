@@ -12,7 +12,9 @@ import math
 import copy
 from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt 
-
+from sklearn.linear_model import LogisticRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import accuracy_score
 
 def yaml_loader(yaml_file):
     with open(yaml_file,'r') as f:
@@ -30,7 +32,8 @@ def progress(current, total, **kwargs):
     if (current == total):
         print()
 
-def make_tsne_for_dataset(model, loader, device, algo, return_logs = False, tsne_name = None):
+def get_features_labels(model, loader, device, return_logs = False):
+    model = model.to(device)
     model.eval()
 
     all_features = []
@@ -42,10 +45,8 @@ def make_tsne_for_dataset(model, loader, device, algo, return_logs = False, tsne
             x = x.to(device)
             y = y.to(device)
 
-            if algo == 'simsiam':
-                feats, _, _ = model(x)
-            else:
-                feats, _ = model(x)
+            output = model(x)
+            feats = output["features"]
 
             all_features.append(feats)
             all_labels.append(y)
@@ -53,9 +54,16 @@ def make_tsne_for_dataset(model, loader, device, algo, return_logs = False, tsne
             if return_logs:
                 progress(idx+1,loader_len)
 
-    features = torch.vstack(all_features).detach().cpu().numpy()
+    features = F.normalize(torch.vstack(all_features), dim = -1).detach().cpu().numpy()
     labels = torch.hstack(all_labels).detach().cpu().numpy()
 
+    return {"features": features, "labels": labels}
+
+def make_tsne_for_dataset(model, loader, device, algo, return_logs = False, tsne_name = None):
+    
+    output = get_features_labels(model, loader, device, return_logs)
+    features = output["features"]
+    labels = output["labels"]
     make_tsne_plot(features, labels, name = tsne_name)
 
 def evaluate(model, mlp, loader, device, return_logs=False, algo=None):
@@ -68,10 +76,9 @@ def evaluate(model, mlp, loader, device, return_logs=False, algo=None):
             x = x.to(device)
             y = y.to(device)
 
-            if algo == 'simsiam':
-                feats, _, _ = model(x)
-            else:
-                feats, _ = model(x)
+            output = model(x)
+            feats = output['features']
+
             scores = mlp(feats)
 
             predict_prob = F.softmax(scores,dim=1)
@@ -85,6 +92,39 @@ def evaluate(model, mlp, loader, device, return_logs=False, algo=None):
                 # print('batches done : ',idx,end='\r')
         accuracy = round(float(correct / samples), 3)
     return accuracy 
+
+def get_tsne_knn_logreg(model, train_loader, test_loader, device, algo, return_logs = False, tsne = True, knn = True, log_reg = True, tsne_name = None):
+    train_output = get_features_labels(model, train_loader, device, return_logs)
+    test_output = get_features_labels(model, test_loader, device, return_logs)
+    
+    x_train, y_train = train_output["features"], train_output["labels"]
+    x_test, y_test = test_output["features"], test_output["labels"]
+
+    outputs = {}
+
+    if tsne:
+        print("TSNE on Test set")
+        # make_tsne_plot(train_output["features"], train_output["labels"], name = f"trnd_{tsne_name}")
+        make_tsne_plot(x_test, y_test, name = f"tstd_{tsne_name}")
+
+    if knn:
+        print("knn evalution")
+        knnc = KNeighborsClassifier(n_neighbors=200)
+        knnc.fit(x_train, y_train)
+        y_test_pred = knnc.predict(x_test)
+        knn_acc = accuracy_score(y_test, y_test_pred)
+        outputs["knn_acc"] = knn_acc
+
+    if log_reg:
+        print("logistic regression evalution")
+        lreg = LogisticRegression(random_state=42) # Example hyperparameters
+        lreg.fit(x_train, y_train)
+        # Make predictions
+        y_test_pred = lreg.predict(x_test)
+        lreg_acc = accuracy_score(y_test, y_test_pred)
+        outputs["lreg_acc"] = lreg_acc
+
+    return outputs
 
 def train_mlp(
     model, mlp, train_loader, test_loader, 
@@ -106,10 +146,9 @@ def train_mlp(
             target = target.to(device)
             
             with torch.no_grad():
-                if algo == "simsiam":
-                    feats, _, _ = model(data)
-                else:
-                    feats, proj_feat = model(data)
+                output = model(data)
+                feats = output['features']
+
             scores = mlp(feats.detach())      
             
             loss_sup = lossfunction(scores, target)
@@ -166,9 +205,12 @@ def train_supcon(
             if train_algo == "supcon":
                 target = target.to(device)
             
-            feats, proj_feat = model(data)
-            feats_cap, proj_feat_cap = model(data_cap)
-            
+            output = model(data)
+            output_cap = model(data_cap)
+
+            feats, proj_feat = output["features"], output["proj_features"]
+            feats_cap, proj_feat_cap = output_cap["features"], output_cap["proj_features"]
+
             if train_algo == "supcon":
                 x_full = torch.cat([proj_feat,proj_feat_cap], dim = 0)
                 target_full = torch.cat([target, target])
@@ -217,11 +259,15 @@ def train_simsiam(
         for idx , (data, data_cap, target) in enumerate(train_loader):
             data = data.to(device)
             data_cap = data_cap.to(device)
+
+            output = model(data)
+            output_cap = model(data_cap)
+
+            feats, proj_feat, pred_feat = output["features"], output["proj_features"], output["pred_features"]
+            feats_cap, proj_feat_cap, pred_feat_cap = output_cap["features"], output_cap["proj_features"], output_cap["pred_features"]
+
             
-            _, feats, pred_feat = model(data) # z, p
-            _, feats_cap, pred_feat_cap = model(data_cap)
-            
-            loss_con = 0.5 * (lossfunction(pred_feat, feats_cap.detach()) + lossfunction(pred_feat_cap, feats.detach()))
+            loss_con = 0.5 * (lossfunction(pred_feat, proj_feat_cap.detach()) + lossfunction(pred_feat_cap, proj_feat.detach()))
             
             optimizer.zero_grad()
             loss_con.backward()
@@ -273,10 +319,13 @@ def train_byol(
 
             data_all = torch.cat([data, data_cap], dim = 0)
 
-            _, online_proj = online_model(data_all) # y, z
+            # _, online_proj = online_model(data_all) # y, z
+            output = online_model(data_all) # z
+            online_proj = output['proj_features']
             online_pred = online_pred_model(online_proj) # q
             with torch.no_grad():
-                _, target_proj = target_model(data_all) # y, z
+                tar_output = target_model(data_all) # y, z
+                target_proj = tar_output['proj_features']
 
             online_pred_feat, online_pred_feat_cap = online_pred.chunk(2, dim = 0)
             target_proj_feat, target_proj_feat_cap = target_proj.chunk(2, dim = 0)
@@ -329,9 +378,16 @@ def train_triplet(
             p = p.to(device)
             n = n.to(device)
             
-            af, apf = model(a)
-            pf, ppf = model(p)
-            nf, npf = model(n)
+            # af, apf = model(a)
+            # pf, ppf = model(p)
+            # nf, npf = model(n)
+
+            output_a = model(a)
+            af, apf = output_a["features"], output_a["proj_features"]
+            output_p = model(p)
+            pf, ppf = output_p["features"], output_p["proj_features"]
+            output_n = model(n)
+            nf, npf = output_n["features"], output_n["proj_features"]
             
             loss_con = lossfunction(
                 z_a = apf, z_p = ppf, z_n=npf)
@@ -379,8 +435,11 @@ def train_barlow_twins(
             data = data.to(device)
             data_cap = data_cap.to(device)
             
-            feats, proj_feat = model(data)
-            feats_cap, proj_feat_cap = model(data_cap)
+            output = model(data)
+            output_cap = model(data_cap)
+
+            feats, proj_feat = output["features"], output["proj_features"]
+            feats_cap, proj_feat_cap = output_cap["features"], output_cap["proj_features"]
 
             loss_con = lossfunction(proj_feat, proj_feat_cap)
             
@@ -427,8 +486,11 @@ def train_DiAl(
             data = data.to(device)
             data_cap = data_cap.to(device)
             
-            feats, proj_feat = model(data)
-            feats_cap, proj_feat_cap = model(data_cap)
+            output = model(data)
+            output_cap = model(data_cap)
+
+            feats, proj_feat = output["features"], output["proj_features"]
+            feats_cap, proj_feat_cap = output_cap["features"], output_cap["proj_features"]
 
             loss_con = lossfunction(proj_feat, proj_feat_cap)
             
@@ -477,8 +539,11 @@ def train_DARe(
             data = data.to(device)
             data_cap = data_cap.to(device)
             
-            feats, proj_feat = model(data)
-            feats_cap, proj_feat_cap = model(data_cap)
+            output = model(data)
+            output_cap = model(data_cap)
+
+            feats, proj_feat = output["features"], output["proj_features"]
+            feats_cap, proj_feat_cap = output_cap["features"], output_cap["proj_features"]
 
             mu, log_var = vae_linear(feats)
             mu_cap, log_var_cap = vae_linear(feats_cap)
@@ -577,7 +642,7 @@ def make_tsne_plot(X, y, name):
     X_embedded = tsne.fit_transform(X)
 
     plt.figure(figsize=(8, 6))
-    plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=y, cmap='tab10')  # Color by labels
+    plt.scatter(X_embedded[:, 0], X_embedded[:, 1], c=y, s = 8, alpha = 0.8, cmap='turbo')  # Color by labels
     plt.title("t-SNE")
     plt.xlabel("t-SNE Component 1")
     plt.ylabel("t-SNE Component 2")
