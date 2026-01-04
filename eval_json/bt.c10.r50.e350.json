@@ -9,11 +9,11 @@
         "num_workers": 3,
         "image_size": 32
     },
-    "return_logs": false,
+    "return_logs": true,
     "eval_every": 10,
     "n_epochs": 350,
-    "n_epochs_mlp": 100,
-    "gpu_id": 4,
+    "n_epochs_mlp": 10,
+    "gpu_id": 0,
     "opt": "SGD",
     "opt_params": {
         "lr": 0.4,
@@ -26,7 +26,7 @@
     },
     "mlp_opt": "SGD",
     "mlp_opt_params": {
-        "lr": 0.01,
+        "lr": 0.1,
         "momentum": 0.9
     },
     "model_params": {
@@ -35,7 +35,7 @@
         "proj_dim": 256,
         "barlow_hidden": 4096
     },
-    "mlp_type": "hidden",
+    "mlp_type": "linear",
     "loss": "barlow_twins",
     "loss_params": {
         "lambd": 0.005
@@ -45,5 +45,6 @@
     "model_save_path": "saved_models/bt.c10.r50.e350.pth",
     "config": "configs/barlow_twins.c10.yaml",
     "knn_acc": 0.696,
-    "lreg_acc": 0.7176
+    "lreg_acc": 0.7176,
+    "best_linear_acc": 0.624
 }

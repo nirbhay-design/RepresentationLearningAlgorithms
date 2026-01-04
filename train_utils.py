@@ -131,7 +131,7 @@ def train_mlp(
     lossfunction, mlp_optimizer, n_epochs, eval_every,
     device_id, eval_id, return_logs=False, algo=None, mlp_schedular=None):
 
-    tval = {'trainacc':[],"trainloss":[]}
+    tval = {'trainacc':[],"trainloss":[], "testacc":[]}
     device = torch.device(f"cuda:{device_id}")
     model = model.to(device)
     mlp = mlp.to(device)
@@ -172,6 +172,7 @@ def train_mlp(
         
         if epochs % eval_every == 0 and device_id == eval_id:
             cur_test_acc = evaluate(model, mlp, test_loader, device, return_logs, algo=algo)
+            tval['testacc'].append(float(cur_test_acc))
             print(f"[GPU{device_id}] Test Accuracy at epoch: {epochs}: {cur_test_acc}")
       
         tval['trainacc'].append(float(curacc))

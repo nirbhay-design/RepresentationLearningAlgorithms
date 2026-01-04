@@ -1,0 +1,34 @@
+environment: 
+YAML: --config
+==> SEED: 42
+==> num_classes: 10
+==> data_name: cifar10
+==> data_params: {'algo': 'simsiam', 'data_dir': 'datasets/cifar10', 'batch_size': 512, 'num_workers': 3, 'image_size': 32}
+==> return_logs: False
+==> eval_every: 10
+==> n_epochs: 800
+==> n_epochs_mlp: 100
+==> gpu_id: 6
+==> opt: SGD
+==> opt_params: {'lr': 0.06, 'momentum': 0.9, 'weight_decay': 0.0001}
+==> schedular_params: {'T_max': 800, 'eta_min': 0.001}
+==> mlp_opt: SGD
+==> mlp_opt_params: {'lr': 0.1, 'momentum': 0.9}
+==> model_params: {'model_name': 'resnet18', 'pretrained': False, 'proj_dim': 128, 'algo_type': 'simsiam', 'pred_dim': 512}
+==> mlp_type: linear
+==> loss: simsiam
+==> distributed: False
+==> train_algo: simsiam
+==> model_save_path: saved_models/simsiam.c10.r18.e800.pth
+==> config: configs/simsiam.c10.yaml
+--------------------------------------------------
+===> using linear mlp
+using optimizer: SGD
+using optimizer: SGD
+loss function: simsiam
+# of Training Images: 50000
+# of Testing Images: 10000
+### simsiam Training begins
+[GPU6] epochs: [1/800] train_loss_con: -0.508
+[GPU6] epochs: [2/800] train_loss_con: -0.608
+[GPU6] epochs: [3/800] train_loss_con: -0.648
