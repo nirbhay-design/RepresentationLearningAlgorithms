@@ -14,7 +14,7 @@ n_epochs_mlp: 100
 gpu_id: 7
 opt: SGD
 opt_params:
-  lr: !!float 6e-2
+  lr: !!float 1e-1
   momentum: 0.9
   weight_decay: !!float 1e-4
 # schedular_params:

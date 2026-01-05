@@ -405,3 +405,12 @@ loss function: simclr
 [GPU0] epochs: [373/800] train_loss_con: 5.291
 [GPU0] epochs: [374/800] train_loss_con: 5.293
 [GPU0] epochs: [375/800] train_loss_con: 5.289
+[GPU0] epochs: [376/800] train_loss_con: 5.291
+[GPU0] epochs: [377/800] train_loss_con: 5.290
+[GPU0] epochs: [378/800] train_loss_con: 5.290
+[GPU0] epochs: [379/800] train_loss_con: 5.290
+[GPU0] epochs: [380/800] train_loss_con: 5.292
+[GPU0] epochs: [381/800] train_loss_con: 5.286
+[GPU0] epochs: [382/800] train_loss_con: 5.290
+[GPU0] epochs: [383/800] train_loss_con: 5.290
+[GPU0] epochs: [384/800] train_loss_con: 5.290

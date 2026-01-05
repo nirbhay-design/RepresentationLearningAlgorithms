@@ -105,11 +105,11 @@
 
 # experiments for barlow twins
 
-nohup python train.py --config configs/barlow_twins.c10.yaml --gpu 2 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path bt.c10.r18.e800.pth > logs/bt.c10.r18.e800.log &
+# nohup python train.py --config configs/barlow_twins.c10.yaml --gpu 2 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path bt.c10.r18.e800.pth > logs/bt.c10.r18.e800.log &
 
-nohup python train.py --config configs/barlow_twins.c100.yaml --gpu 2 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path bt.c100.r18.e800.pth > logs/bt.c100.r18.e800.log &
+# nohup python train.py --config configs/barlow_twins.c100.yaml --gpu 2 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path bt.c100.r18.e800.pth > logs/bt.c100.r18.e800.log &
 
-nohup python train.py --config configs/barlow_twins.c10.yaml --gpu 3 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path bt.c10.r50.e800.pth > logs/bt.c10.r50.e800.log &
+# nohup python train.py --config configs/barlow_twins.c10.yaml --gpu 3 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path bt.c10.r50.e800.pth > logs/bt.c10.r50.e800.log &
 
-nohup python train.py --config configs/barlow_twins.c100.yaml --gpu 6 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path bt.c100.r50.e800.pth > logs/bt.c100.r50.e800.log &
+# nohup python train.py --config configs/barlow_twins.c100.yaml --gpu 6 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path bt.c100.r50.e800.pth > logs/bt.c100.r50.e800.log &
 
