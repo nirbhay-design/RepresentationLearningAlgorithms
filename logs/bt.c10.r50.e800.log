@@ -1,0 +1,33 @@
+environment: 
+YAML: --config
+==> SEED: 42
+==> num_classes: 10
+==> data_name: cifar10
+==> data_params: {'algo': 'barlow_twins', 'data_dir': 'datasets/cifar10', 'batch_size': 512, 'num_workers': 3, 'image_size': 32}
+==> return_logs: False
+==> eval_every: 10
+==> n_epochs: 800
+==> n_epochs_mlp: 100
+==> gpu_id: 3
+==> opt: SGD
+==> opt_params: {'lr': 0.4, 'momentum': 0.9, 'weight_decay': 0.0001}
+==> schedular_params: {'T_max': 800, 'eta_min': 0.001}
+==> mlp_opt: SGD
+==> mlp_opt_params: {'lr': 0.1, 'momentum': 0.9}
+==> model_params: {'model_name': 'resnet50', 'pretrained': False, 'proj_dim': 4096, 'barlow_hidden': 4096}
+==> mlp_type: linear
+==> loss: barlow_twins
+==> loss_params: {'lambd': 0.005}
+==> distributed: False
+==> train_algo: barlow_twins
+==> model_save_path: saved_models/bt.c10.r50.e800.pth
+==> config: configs/barlow_twins.c10.yaml
+--------------------------------------------------
+===> using linear mlp
+using optimizer: SGD
+using optimizer: SGD
+loss function: barlow_twins
+# of Training Images: 50000
+# of Testing Images: 10000
+### Barlow Twins Training begins
+[GPU3] epochs: [1/800] train_loss_con: 5478.473

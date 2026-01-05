@@ -59,7 +59,7 @@ class Network(nn.Module):
         if not pretrained:
             in_feat = self.feat_extractor.conv1.in_channels
             out_feat = self.feat_extractor.conv1.out_channels
-            self.feat_extractor.conv1 = nn.Conv2d(in_feat, out_feat, kernel_size=3, stride=1, bias=False)
+            self.feat_extractor.conv1 = nn.Conv2d(in_feat, out_feat, kernel_size=3, stride=1, padding=1, bias=False)
 
         self.classifier_infeatures = model._modules.get(module_keys[-1], nn.Identity()).in_features
         
@@ -128,13 +128,13 @@ if __name__ == "__main__":
     network = Network(model_name = 'resnet50', pretrained=False, algo_type='byol', byol_hidden = 4096, proj_dim = 256)
     mlp = MLP(network.classifier_infeatures, num_classes=10, mlp_type='hidden')
     x = torch.rand(2,3,224,224)
-    feat, proj_feat = network(x)
-    print(feat.shape, proj_feat.shape)
-    score = mlp(feat)
-    print(score.shape)
+    # feat, proj_feat = network(x)
+    # print(feat.shape, proj_feat.shape)
+    # score = mlp(feat)
+    # print(score.shape)
 
     print(network)
 
-    print(network.proj.mlp[-1].out_features)
+    # print(network.proj.mlp[-1].out_features)
 
     # contrastive loss on proj_feat, representations are feat, MLP on feat 
