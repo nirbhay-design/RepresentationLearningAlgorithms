@@ -304,10 +304,12 @@ def train_byol(
 
     print(f"### byol Training begins")
     device = torch.device(f"cuda:{device_id}")
-    ema = EMA(ema_beta, n_epochs)
+    ema = EMA(ema_beta, n_epochs * len(train_loader))
     online_model = online_model.to(device)
     target_model = target_model.to(device)
     online_pred_model = online_pred_model.to(device)
+
+    global_step = 1
 
     for epochs in range(n_epochs):
         online_model.train()
@@ -337,6 +339,8 @@ def train_byol(
             optimizer.zero_grad()
             loss_con.backward()
             optimizer.step()
+            ema(online_model, target_model, global_step)
+            global_step += 1
 
             cur_loss += loss_con.item() / (len_train)
             
@@ -344,7 +348,6 @@ def train_byol(
                 progress(idx+1,len(train_loader), loss_con=loss_con.item(), GPU = device_id)
         
         opt_lr_schedular.step()
-        target_model = ema(online_model, target_model, epochs)
             
         print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
 
@@ -634,9 +637,8 @@ class EMA():
 
     def __call__(self, online, target, k):
         for online_wt, target_wt in zip(online.parameters(), target.parameters()):
-            target_wt.data = self.tau * online_wt.data + (1 - self.tau) * target_wt.data
+            target_wt.data = self.tau * target_wt.data + (1 - self.tau) * online_wt.data
         self.tau = 1 - (1 - self.tau_base) * (math.cos(math.pi * k / self.K) + 1) / 2
-        return copy.deepcopy(target) 
 
 def make_tsne_plot(X, y, name):
     tsne = TSNE(n_components=2, random_state=0)
