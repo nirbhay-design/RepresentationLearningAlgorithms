@@ -933,3 +933,18 @@ loss function: barlow_twins
 [GPU6] epochs: [90/100] train_acc: 0.708 train_loss_sup: 1.025
 [GPU6] Test Accuracy at epoch: 90: 0.609
 [GPU6] epochs: [91/100] train_acc: 0.713 train_loss_sup: 1.007
+[GPU6] epochs: [92/100] train_acc: 0.707 train_loss_sup: 1.035
+[GPU6] epochs: [93/100] train_acc: 0.711 train_loss_sup: 1.012
+[GPU6] epochs: [94/100] train_acc: 0.710 train_loss_sup: 1.016
+[GPU6] epochs: [95/100] train_acc: 0.709 train_loss_sup: 1.023
+[GPU6] epochs: [96/100] train_acc: 0.711 train_loss_sup: 1.010
+[GPU6] epochs: [97/100] train_acc: 0.711 train_loss_sup: 1.009
+[GPU6] epochs: [98/100] train_acc: 0.710 train_loss_sup: 1.013
+[GPU6] epochs: [99/100] train_acc: 0.713 train_loss_sup: 1.016
+[GPU6] epochs: [100/100] train_acc: 0.711 train_loss_sup: 1.020
+[GPU6] Final Test Accuracy: 0.616
+Model weights saved
+<All keys matched successfully>
+knn evalution
+logistic regression evalution
+knn_acc: 0.572, log_reg_acc: 0.621
