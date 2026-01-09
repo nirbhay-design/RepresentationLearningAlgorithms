@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import warnings; warnings.filterwarnings("ignore")
 
 def load_log_file(filepath):
-    keywords = {"train_loss_con": [], "Test Accuracy": [], "train_loss_sup": []}
+    keywords = {"train_loss_con": [], "Test Accuracy": [], "train_loss_sup": [], "knn_acc": [], "log_reg_acc": []}
     with open(filepath, 'r') as f:
         data = list(map(lambda x: x.replace("\n", ""), f.readlines()))
         for line in data:
@@ -13,7 +13,7 @@ def load_log_file(filepath):
                 if keyword in line:
                     keywords[keyword].append(float(split_line[-1]))
 
-    if any([len(x) == 0 for x in keywords.values()]):
+    if len(keywords["Test Accuracy"]) == 0:
         raise Exception("This is issue")
 
     return keywords
@@ -42,7 +42,11 @@ def plot_loss_test_accuracy(data_dir):
         if model == "log":
             model = "r50"
         combine = f"{data}.{model}"
-        print(f"[{file}] Best Test Accuracy: algo: {algo}, dataset: {data}: {max(all_files_data[file]['Test Accuracy'])}")
+        print(f"[{file}] Best Test Accuracy: algo: {algo}, dataset: {data}: {max(all_files_data[file]['Test Accuracy'])}", end = "")
+        if len(all_files_data[file]["knn_acc"]) != 0:
+            print(f", knn_acc: {all_files_data[file]['knn_acc'][0]}, log_reg_acc: {all_files_data[file]['log_reg_acc'][0]}")
+        else:
+            print()
         if algo not in algo_datas:
             algo_datas[algo] = {}
         algo_datas[algo][combine] = all_files_data[file]['train_loss_con'] 
@@ -57,6 +61,7 @@ def plot_based_on_keywords(algo, algo_data):
     # marker_map = dict(zip(algo_data.keys(), marker))
     for keyword, data in algo_data.items():
         plt.plot(list(range(1,len(data) + 1)), data, label = f"{keyword}")
+        # plt.plot(list(range(1,len(data) + 1)), data, label = f"{keyword}", marker='o', markersize=3)
     plt.grid(True, linestyle='--', linewidth=0.5)
     plt.xlabel("Iterations")
     plt.ylabel("Contrastive Loss")
