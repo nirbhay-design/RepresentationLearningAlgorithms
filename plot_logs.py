@@ -11,7 +11,10 @@ def load_log_file(filepath):
             split_line = line.split(":")
             for keyword in keywords.keys():
                 if keyword in line:
-                    keywords[keyword].append(float(split_line[-1]))
+                    if keyword == "knn_acc":
+                        keywords[keyword].append(float(line.split(",")[0].split(":")[-1]))
+                    else:
+                        keywords[keyword].append(float(split_line[-1]))
 
     if len(keywords["Test Accuracy"]) == 0:
         raise Exception("This is issue")

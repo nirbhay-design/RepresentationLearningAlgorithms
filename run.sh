@@ -86,7 +86,7 @@
 
 # nohup python train.py --config configs/simsiam.c10.yaml --gpu 6 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path simsiam.c10.r18.e800.pth > logs/simsiam.c10.r18.e800.log &
 
-# nohup python train.py --config configs/simsiam.c100.yaml --gpu 6 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path simsiam.c100.r18.e800.pth > logs/simsiam.c100.r18.e800.log &
+# nohup python train.py --config configs/simsiam.c100.yaml --gpu 7 --model resnet18 --epochs 800 --epochs_lin 100 --lr 0.06 --linear_lr 0.1 --mlp_type linear --save_path simsiam.c100.r18.e800.pth > logs/simsiam.c100.r18.e800.log &
 
 # nohup python train.py --config configs/simsiam.c10.yaml --gpu 0 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path simsiam.c10.r50.e800.pth > logs/simsiam.c10.r50.e800.log &
 
@@ -117,9 +117,9 @@
 
 # nohup python train.py --config configs/byol.c10.yaml --gpu 6 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path byol.c10.r18.e800.pth > logs/byol.c10.r18.e800.log &
 
-# nohup python train.py --config configs/byol.c100.yaml --gpu 7 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path byol.c100.r18.e800.pth > logs/byol.c100.r18.e800.log &
+nohup python train.py --config configs/byol.c100.yaml --gpu 7 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path byol.c100.r18.e800.pth > logs/byol.c100.r18.e800.log &
 
-nohup python train.py --config configs/byol.c10.yaml --gpu 6 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path byol.c10.r50.e800.pth > logs/byol.c10.r50.e800.log &
+# nohup python train.py --config configs/byol.c10.yaml --gpu 6 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path byol.c10.r50.e800.pth > logs/byol.c10.r50.e800.log &
 
-nohup python train.py --config configs/byol.c100.yaml --gpu 7 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path byol.c100.r50.e800.pth > logs/byol.c100.r50.e800.log &
+nohup python train.py --config configs/byol.c100.yaml --gpu 6 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path byol.c100.r50.e800.pth > logs/byol.c100.r50.e800.log &
 
