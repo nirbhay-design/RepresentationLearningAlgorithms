@@ -10,7 +10,7 @@ YAML: --config
 ==> n_epochs_mlp: 100
 ==> gpu_id: 6
 ==> opt: SGD
-==> opt_params: {'lr': 0.4, 'momentum': 0.9, 'weight_decay': 1e-05}
+==> opt_params: {'lr': 0.2, 'momentum': 0.9, 'weight_decay': 0.0001}
 ==> schedular_params: {'T_max': 800, 'eta_min': 0.001}
 ==> mlp_opt: SGD
 ==> mlp_opt_params: {'lr': 0.1, 'momentum': 0.9}

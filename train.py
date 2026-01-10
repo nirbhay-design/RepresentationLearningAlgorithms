@@ -151,6 +151,7 @@ def main_single():
     #     param_config["mlp_opt_lr_schedular"] = mlp_opt_lr_schedular
     elif train_algo == 'byol':
         target_net = Network(**config['model_params'])
+        target_net.load_state_dict(model.state_dict())
         ema_tau = config['ema_tau']
 
         param_config.pop("model")

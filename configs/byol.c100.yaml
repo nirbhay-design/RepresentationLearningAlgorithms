@@ -16,7 +16,7 @@ opt: SGD
 opt_params:
   lr: !!float 4e-1
   momentum: 0.9
-  weight_decay: !!float 1e-5
+  weight_decay: !!float 1e-4
 # schedular_params:
 #   step_size: 40 
 #   gamma: 0.1
