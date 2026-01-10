@@ -84,7 +84,7 @@ class Network(nn.Module):
         elif algo_type == 'byol':
             self.proj = BYOL_mlp(in_features = self.classifier_infeatures, hidden_dim = byol_hidden, out_features = proj_dim)
         
-        elif algo_type == "barlow_twins":
+        elif algo_type == "barlow_twins" or algo_type == "vicreg":
             self.proj = nn.Sequential(
                 nn.Linear(self.classifier_infeatures, barlow_hidden, bias=False),
                 nn.BatchNorm1d(barlow_hidden, bias=False),

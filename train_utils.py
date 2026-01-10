@@ -478,7 +478,7 @@ def train_vicreg(
         optimizer, mlp_optimizer, opt_lr_schedular, 
         eval_every, n_epochs, n_epochs_mlp, device_id, eval_id, tsne_name, return_logs=False): 
     
-    print(f"### VicReg Training begins")
+    print(f"### VICReg Training begins")
 
     device = torch.device(f"cuda:{device_id}")
     model = model.to(device)
@@ -512,7 +512,7 @@ def train_vicreg(
         print(f"[GPU{device_id}] epochs: [{epochs+1}/{n_epochs}] train_loss_con: {cur_loss:.3f}")
 
     print("### TSNE starts")
-    make_tsne_for_dataset(model, test_loader, device_id, 'barlow_twins', return_logs = return_logs, tsne_name = tsne_name)
+    make_tsne_for_dataset(model, test_loader, device_id, 'vicreg', return_logs = return_logs, tsne_name = tsne_name)
 
     print("### MLP training begins")
 
@@ -645,6 +645,8 @@ def loss_function(loss_type = 'supcon', **kwargs):
         return BYOLLoss(), loss_mlp
     elif loss_type == "barlow_twins":
         return BarlowTwinLoss(**kwargs), loss_mlp
+    elif loss_type == "vicreg":
+        return VICRegLoss(**kwargs), loss_mlp
     elif loss_type == "dare":
         return DAReLoss(**kwargs), loss_mlp
     elif loss_type == "dial":

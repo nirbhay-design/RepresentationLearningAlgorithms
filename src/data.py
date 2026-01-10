@@ -33,7 +33,7 @@ def get_transforms(image_size, data_name = "cifar10", algo='supcon'):
         # transforms.Normalize(mean = mean, std = std)
     ])
 
-    if algo == 'simsiam' or algo == 'byol':
+    if algo == 'simsiam' or algo == 'byol' or algo == "vicreg":
         train_transforms = transforms.Compose([
             train_transforms,
             transforms.Normalize(mean = mean, std = std)
@@ -95,7 +95,7 @@ class DataCifar():
             
         image, label = self.data[idx]
 
-        if self.algo == "simclr" or self.algo == "dial" or self.algo == "dare" or self.algo == "supcon" or self.algo == "simsiam" or self.algo == "byol" or self.algo == "moco" or self.algo == "barlow_twins":
+        if self.algo == "simclr" or self.algo == "dial" or self.algo == "dare" or self.algo == "supcon" or self.algo == "simsiam" or self.algo == "byol" or self.algo == "moco" or self.algo == "barlow_twins" or self.algo == "vicreg":
             img1 = self.target_transform(image)
             img2 = self.target_transform(image)
             return img1, img2, label 

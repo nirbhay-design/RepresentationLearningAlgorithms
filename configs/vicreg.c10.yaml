@@ -1,0 +1,44 @@
+SEED: 42
+num_classes: 10
+data_name: cifar10
+data_params:
+  algo: vicreg
+  data_dir: datasets/cifar10
+  batch_size: 512
+  num_workers: 3
+  image_size: 32
+return_logs: False
+eval_every: 10
+n_epochs: &epoch 800
+n_epochs_mlp: 100
+gpu_id: 3
+opt: SGD
+opt_params:
+  lr: !!float 4e-1
+  momentum: 0.9
+  weight_decay: !!float 1e-4
+# schedular_params:
+#   step_size: 40 
+#   gamma: 0.1
+schedular_params:
+  T_max: *epoch 
+  eta_min: 0.001
+mlp_opt: SGD
+mlp_opt_params:
+  lr: !!float 0.01
+  momentum: 0.9
+model_params:
+  model_name: 'resnet18' 
+  pretrained: False 
+  proj_dim: 4096
+  barlow_hidden: 4096
+mlp_type: "hidden"
+loss: vicreg
+loss_params: 
+  _lambda: 25.0
+  mu: 25.0
+  nu: 1.0
+distributed: False
+train_algo: vicreg
+
+model_save_path: saved_models

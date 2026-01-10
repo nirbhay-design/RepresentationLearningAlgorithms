@@ -123,3 +123,12 @@
 
 # nohup python train.py --config configs/byol.c100.yaml --gpu 6 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --lr 0.2 --save_path byol.c100.r50.e800.pth > logs/byol.c100.r50.e800.log &
 
+# experiments for vicreg 
+
+nohup python train.py --config configs/vicreg.c10.yaml --gpu 0 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --lr 0.06 --save_path vicreg.c10.r18.e800.pth > logs/vicreg.c10.r18.e800.log &
+
+nohup python train.py --config configs/vicreg.c100.yaml --gpu 0 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --lr 0.06 --save_path vicreg.c100.r18.e800.pth > logs/vicreg.c100.r18.e800.log &
+
+nohup python train.py --config configs/vicreg.c10.yaml --gpu 2 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --lr 0.06 --save_path vicreg.c10.r50.e800.pth > logs/vicreg.c10.r50.e800.log &
+
+nohup python train.py --config configs/vicreg.c100.yaml --gpu 3 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --lr 0.06 --save_path vicreg.c100.r50.e800.pth > logs/vicreg.c100.r50.e800.log &

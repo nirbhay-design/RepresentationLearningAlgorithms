@@ -7,7 +7,7 @@ from src.network import Network, MLP, BYOL_mlp, VAE_linear
 from train_utils import yaml_loader, train_supcon, train_triplet, train_simsiam, \
                         train_byol, train_barlow_twins, train_DARe, train_DiAl, model_optimizer, \
                         loss_function, get_tsne_knn_logreg, train_mlp, \
-                        load_dataset
+                        load_dataset, train_vicreg
 
 import torch.multiprocessing as mp 
 from torch.nn.parallel import DistributedDataParallel as DDP 
@@ -64,6 +64,8 @@ def train_network(**kwargs):
         return train_DARe(**kwargs)
     elif train_algo == "dial":
         return train_DiAl(**kwargs)
+    elif train_algo == "vicreg":
+        return train_vicreg(**kwargs)
     return None 
 
 def main_single():
