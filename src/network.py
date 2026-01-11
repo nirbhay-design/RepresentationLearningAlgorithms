@@ -94,6 +94,7 @@ class Network(nn.Module):
                 nn.ReLU(),
                 nn.Linear(barlow_hidden, proj_dim)
             )
+            
         else:
             self.proj = nn.Linear(self.classifier_infeatures, proj_dim)
 

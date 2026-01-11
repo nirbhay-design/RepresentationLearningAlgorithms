@@ -8,6 +8,7 @@ import torch.optim as optim
 import yaml, sys, random, numpy as np
 from yaml.loader import SafeLoader
 from src.data import *
+from src.lars import LARS
 import math
 import copy
 from sklearn.manifold import TSNE
@@ -669,6 +670,8 @@ def model_optimizer(model, opt_name, model2 = None, **opt_params):
         return optim.Adam(params, **opt_params)
     elif opt_name == "AdamW":
         return optim.AdamW(params, **opt_params)
+    elif opt_name == "LARS":
+        return LARS(params, **opt_params)
     else:
         print("{opt_name} not available")
         return None
