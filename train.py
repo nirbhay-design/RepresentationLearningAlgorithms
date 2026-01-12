@@ -35,6 +35,7 @@ def get_args():
     parser.add_argument("--test", action="store_true", help="test or not")
     parser.add_argument("--knn", action="store_true", help="evaluate knn or not")
     parser.add_argument("--lreg", action="store_true", help="evaluate logistic regression or not")
+    parser.add_argument("--cmet", action="store_true", help="evaluate clustering metrics or not")
     parser.add_argument("--linprobe", action="store_true", help="evaluate linear probing or not ")
     parser.add_argument("--tsne", action="store_true", help="get test tsne or not")
 
@@ -109,9 +110,9 @@ def main_single():
         print(model.load_state_dict(torch.load(config["model_save_path"], map_location="cpu")))
         
         test_config = {"model": model, "train_loader": train_dl_mlp, "test_loader": test_dl, 
-                       "device": device, "algo": train_algo, "return_logs": return_logs, 
-                       "tsne": args.tsne, "knn": args.knn, "log_reg": args.lreg, "tsne_name": tsne_name}
-        
+                       "device": device, "algo": train_algo, "return_logs": return_logs,
+                       "tsne": args.tsne, "knn": args.knn, "log_reg": args.lreg, "tsne_name": tsne_name, "cmet": args.cmet}
+
         output = get_tsne_knn_logreg(**test_config)
 
         if args.linprobe:
@@ -134,7 +135,7 @@ def main_single():
 
         with open(file_name, "w") as f:
             json.dump(save_config, f, indent=4)
-        print(f"knn_acc: {output.get('knn_acc', -1):.3f}, log_reg_acc: {output.get('lreg_acc', -1):.3f}")
+        print(f"knn_acc: {output.get('knn_acc', -1):.3f}, log_reg_acc: {output.get('lreg_acc', -1):.3f}, ARI: {output.get('ari', -1):.3f}, AMI: {output.get('ami', -1):.3f}, FMS: {output.get('fmi', -1):.3f}")
         return 
 
 
@@ -173,7 +174,7 @@ def main_single():
         
     test_config = {"model": model, "train_loader": train_dl_mlp, "test_loader": test_dl, 
                     "device": device, "algo": train_algo, "return_logs": return_logs, 
-                    "tsne": False, "knn": True, "log_reg": True, "tsne_name": tsne_name}
+                    "tsne": False, "knn": True, "log_reg": True, "tsne_name": tsne_name, "cmet": False}
     
     output = get_tsne_knn_logreg(**test_config)
     # print(output)

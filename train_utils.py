@@ -15,7 +15,11 @@ from sklearn.manifold import TSNE
 import matplotlib.pyplot as plt 
 from sklearn.linear_model import LogisticRegression
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score
+from sklearn.metrics import accuracy_score, adjusted_rand_score, \
+                            adjusted_mutual_info_score, \
+                            fowlkes_mallows_score
+from sklearn.cluster import KMeans
+
 
 def yaml_loader(yaml_file):
     with open(yaml_file,'r') as f:
@@ -94,7 +98,7 @@ def evaluate(model, mlp, loader, device, return_logs=False, algo=None):
         accuracy = round(float(correct / samples), 3)
     return accuracy 
 
-def get_tsne_knn_logreg(model, train_loader, test_loader, device, algo, return_logs = False, tsne = True, knn = True, log_reg = True, tsne_name = None):
+def get_tsne_knn_logreg(model, train_loader, test_loader, device, algo, return_logs = False, tsne = True, knn = True, log_reg = True, tsne_name = None, cmet = None):
     train_output = get_features_labels(model, train_loader, device, return_logs)
     test_output = get_features_labels(model, test_loader, device, return_logs)
     
@@ -124,6 +128,18 @@ def get_tsne_knn_logreg(model, train_loader, test_loader, device, algo, return_l
         y_test_pred = lreg.predict(x_test)
         lreg_acc = accuracy_score(y_test, y_test_pred)
         outputs["lreg_acc"] = lreg_acc
+
+    if cmet: 
+        N_CLASSES = len(np.unique(y_test))
+        print("clustering metrics evalution")
+        kmeans = KMeans(n_clusters=N_CLASSES, random_state=42)
+        cluster_labels = kmeans.fit_predict(x_train)
+        ari = adjusted_rand_score(y_train, cluster_labels)
+        ami = adjusted_mutual_info_score(y_train, cluster_labels)
+        fmi = fowlkes_mallows_score(y_train, cluster_labels)
+        outputs["ari"] = ari
+        outputs["ami"] = ami
+        outputs["fmi"] = fmi
 
     return outputs
 

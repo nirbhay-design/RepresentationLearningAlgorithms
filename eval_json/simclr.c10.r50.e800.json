@@ -1,0 +1,52 @@
+{
+    "SEED": 42,
+    "num_classes": 10,
+    "data_name": "cifar10",
+    "data_params": {
+        "algo": "simclr",
+        "data_dir": "datasets/cifar10",
+        "batch_size": 512,
+        "num_workers": 3,
+        "image_size": 32
+    },
+    "return_logs": true,
+    "eval_every": 10,
+    "n_epochs": 800,
+    "n_epochs_mlp": 100,
+    "gpu_id": 0,
+    "opt": "SGD",
+    "opt_params": {
+        "lr": 0.5,
+        "momentum": 0.9,
+        "nesterov": true,
+        "weight_decay": 0.0001
+    },
+    "schedular_params": {
+        "T_max": 800,
+        "eta_min": 0.001
+    },
+    "mlp_opt": "SGD",
+    "mlp_opt_params": {
+        "lr": 0.1,
+        "momentum": 0.9,
+        "nesterov": true
+    },
+    "model_params": {
+        "model_name": "resnet50",
+        "pretrained": false,
+        "proj_dim": 128
+    },
+    "mlp_type": "linear",
+    "loss": "simclr",
+    "loss_params": {
+        "sim": "cosine",
+        "tau": 0.2
+    },
+    "distributed": false,
+    "train_algo": "simclr",
+    "config": "configs/simclr.c10.yaml",
+    "model_save_path": "saved_models/simclr.c10.r50.e800.pth",
+    "ari": 0.3307900525655542,
+    "ami": 0.4505443160632562,
+    "fmi": 0.40174341668987223
+}
