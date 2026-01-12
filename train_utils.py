@@ -114,6 +114,14 @@ def get_tsne_knn_logreg(model, train_loader, test_loader, device, algo, return_l
 
     if knn:
         print("knn evalution")
+        # nbs = [5, 20, 50]
+        # for n in nbs:
+        #     print(f"KNN with K={n}")
+        #     knnc = KNeighborsClassifier(n_neighbors=n)
+        #     knnc.fit(x_train, y_train)
+        #     y_test_pred = knnc.predict(x_test)
+        #     knn_acc = accuracy_score(y_test, y_test_pred)
+        #     outputs[f"knn_acc_{n}"] = knn_acc
         knnc = KNeighborsClassifier(n_neighbors=200)
         knnc.fit(x_train, y_train)
         y_test_pred = knnc.predict(x_test)
