@@ -18,7 +18,7 @@ from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score, adjusted_rand_score, \
                             adjusted_mutual_info_score, \
                             fowlkes_mallows_score
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, SpectralClustering
 
 
 def yaml_loader(yaml_file):
@@ -142,6 +142,13 @@ def get_tsne_knn_logreg(model, train_loader, test_loader, device, algo, return_l
         print("clustering metrics evalution")
         kmeans = KMeans(n_clusters=N_CLASSES, random_state=42)
         cluster_labels = kmeans.fit_predict(x_train)
+        # spectral = SpectralClustering(n_clusters=N_CLASSES, 
+        #                       affinity='nearest_neighbors',
+        #                       n_neighbors=20,  # Similar to your optimal k-NN
+        #                       assign_labels='kmeans',
+        #                       random_state=42,
+        #                       n_jobs=-1)
+        # cluster_labels = spectral.fit_predict(x_train)
         ari = adjusted_rand_score(y_train, cluster_labels)
         ami = adjusted_mutual_info_score(y_train, cluster_labels)
         fmi = fowlkes_mallows_score(y_train, cluster_labels)
