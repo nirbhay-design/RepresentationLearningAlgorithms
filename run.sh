@@ -82,6 +82,9 @@
 # python train.py --config configs/simclr.c100.yaml --mlp_type linear --gpu 6 --model resnet50 --epochs 350 --epochs_lin 100 --save_path simclr.c100.r50.e350.pth --test --knn --lreg
 
 
+########################### 800 epochs experiments ##############################
+#################################################################################
+
 # Experiment for simsiam 
 
 # nohup python train.py --config configs/simsiam.c10.yaml --gpu 6 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --save_path simsiam.c10.r18.e800.pth > logs/simsiam.c10.r18.e800.log &

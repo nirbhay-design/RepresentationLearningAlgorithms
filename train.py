@@ -135,6 +135,9 @@ def main_single():
 
         with open(file_name, "w") as f:
             json.dump(save_config, f, indent=4)
+        for key, value in output.items():
+            print(f"{key}: {value:.3f}", end = ", ")
+        print()
         print(f"knn_acc: {output.get('knn_acc', -1):.3f}, log_reg_acc: {output.get('lreg_acc', -1):.3f}, ARI: {output.get('ari', -1):.3f}, AMI: {output.get('ami', -1):.3f}, FMS: {output.get('fmi', -1):.3f}")
         return 
 
