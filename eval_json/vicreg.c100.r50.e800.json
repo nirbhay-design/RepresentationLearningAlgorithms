@@ -1,10 +1,10 @@
 {
     "SEED": 42,
-    "num_classes": 10,
-    "data_name": "cifar10",
+    "num_classes": 100,
+    "data_name": "cifar100",
     "data_params": {
         "algo": "vicreg",
-        "data_dir": "datasets/cifar10",
+        "data_dir": "datasets/cifar100",
         "batch_size": 512,
         "num_workers": 3,
         "image_size": 32
@@ -13,7 +13,7 @@
     "eval_every": 10,
     "n_epochs": 800,
     "n_epochs_mlp": 100,
-    "gpu_id": 1,
+    "gpu_id": 4,
     "opt": "LARS",
     "opt_params": {
         "lr": 0.4,
@@ -30,7 +30,7 @@
         "momentum": 0.9
     },
     "model_params": {
-        "model_name": "resnet18",
+        "model_name": "resnet50",
         "pretrained": false,
         "proj_dim": 4096,
         "barlow_hidden": 4096
@@ -44,11 +44,11 @@
     },
     "distributed": false,
     "train_algo": "vicreg",
-    "model_save_path": "saved_models/vicreg.c10.r18.e800.pth",
-    "config": "configs/vicreg.c10.yaml",
-    "knn_acc_5": 0.816,
-    "knn_acc_10": 0.8236,
-    "knn_acc_20": 0.8254,
-    "knn_acc_50": 0.8229,
-    "knn_acc": 0.8201
+    "model_save_path": "saved_models/vicreg.c100.r50.e800.pth",
+    "config": "configs/vicreg.c100.yaml",
+    "knn_acc_5": 0.5052,
+    "knn_acc_10": 0.5198,
+    "knn_acc_20": 0.5255,
+    "knn_acc_50": 0.5219,
+    "knn_acc": 0.5183
 }

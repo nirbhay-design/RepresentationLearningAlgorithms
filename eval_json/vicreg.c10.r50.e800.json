@@ -13,7 +13,7 @@
     "eval_every": 10,
     "n_epochs": 800,
     "n_epochs_mlp": 100,
-    "gpu_id": 1,
+    "gpu_id": 6,
     "opt": "LARS",
     "opt_params": {
         "lr": 0.4,
@@ -30,7 +30,7 @@
         "momentum": 0.9
     },
     "model_params": {
-        "model_name": "resnet18",
+        "model_name": "resnet50",
         "pretrained": false,
         "proj_dim": 4096,
         "barlow_hidden": 4096
@@ -44,11 +44,11 @@
     },
     "distributed": false,
     "train_algo": "vicreg",
-    "model_save_path": "saved_models/vicreg.c10.r18.e800.pth",
+    "model_save_path": "saved_models/vicreg.c10.r50.e800.pth",
     "config": "configs/vicreg.c10.yaml",
-    "knn_acc_5": 0.816,
-    "knn_acc_10": 0.8236,
-    "knn_acc_20": 0.8254,
-    "knn_acc_50": 0.8229,
-    "knn_acc": 0.8201
+    "knn_acc_5": 0.8554,
+    "knn_acc_10": 0.8607,
+    "knn_acc_20": 0.8608,
+    "knn_acc_50": 0.8605,
+    "knn_acc": 0.8603
 }
