@@ -1,10 +1,10 @@
 {
     "SEED": 42,
-    "num_classes": 10,
-    "data_name": "cifar10",
+    "num_classes": 100,
+    "data_name": "cifar100",
     "data_params": {
         "algo": "barlow_twins",
-        "data_dir": "datasets/cifar10",
+        "data_dir": "datasets/cifar100",
         "batch_size": 512,
         "num_workers": 3,
         "image_size": 32
@@ -13,7 +13,7 @@
     "eval_every": 10,
     "n_epochs": 800,
     "n_epochs_mlp": 100,
-    "gpu_id": 3,
+    "gpu_id": 2,
     "opt": "SGD",
     "opt_params": {
         "lr": 0.4,
@@ -30,7 +30,7 @@
         "momentum": 0.9
     },
     "model_params": {
-        "model_name": "resnet50",
+        "model_name": "resnet18",
         "pretrained": false,
         "proj_dim": 4096,
         "barlow_hidden": 4096
@@ -42,12 +42,11 @@
     },
     "distributed": false,
     "train_algo": "barlow_twins",
-    "model_save_path": "saved_models/bt.c10.r50.e800.pth",
-    "config": "configs/barlow_twins.c10.yaml",
-    "knn_acc": 0.8849,
-    "lreg_acc": 0.9,
-    "knn_acc_5": 0.8799,
-    "knn_acc_10": 0.8829,
-    "knn_acc_20": 0.8831,
-    "knn_acc_50": 0.8852
+    "model_save_path": "saved_models/bt.c100.r18.e800.pth",
+    "config": "configs/barlow_twins.c100.yaml",
+    "knn_acc_5": 0.5317,
+    "knn_acc_10": 0.5468,
+    "knn_acc_20": 0.5502,
+    "knn_acc_50": 0.546,
+    "knn_acc": 0.5358
 }

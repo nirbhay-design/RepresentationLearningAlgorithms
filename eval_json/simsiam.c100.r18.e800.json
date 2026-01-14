@@ -1,10 +1,10 @@
 {
     "SEED": 42,
-    "num_classes": 10,
-    "data_name": "cifar10",
+    "num_classes": 100,
+    "data_name": "cifar100",
     "data_params": {
         "algo": "simsiam",
-        "data_dir": "datasets/cifar10",
+        "data_dir": "datasets/cifar100",
         "batch_size": 512,
         "num_workers": 3,
         "image_size": 32
@@ -13,10 +13,10 @@
     "eval_every": 10,
     "n_epochs": 800,
     "n_epochs_mlp": 100,
-    "gpu_id": 6,
+    "gpu_id": 7,
     "opt": "SGD",
     "opt_params": {
-        "lr": 0.1,
+        "lr": 0.08,
         "momentum": 0.9,
         "weight_decay": 0.0001
     },
@@ -30,7 +30,7 @@
         "momentum": 0.9
     },
     "model_params": {
-        "model_name": "resnet50",
+        "model_name": "resnet18",
         "pretrained": false,
         "proj_dim": 128,
         "algo_type": "simsiam",
@@ -40,14 +40,11 @@
     "loss": "simsiam",
     "distributed": false,
     "train_algo": "simsiam",
-    "model_save_path": "saved_models/simsiam.c10.r50.e800.pth",
-    "config": "configs/simsiam.c10.yaml",
-    "ari": 0.4551240762802083,
-    "ami": 0.5779700899797872,
-    "fmi": 0.5158720500444223,
-    "knn_acc_5": 0.8996,
-    "knn_acc_20": 0.9026,
-    "knn_acc_50": 0.9038,
-    "knn_acc": 0.8947,
-    "knn_acc_10": 0.9018
+    "model_save_path": "saved_models/simsiam.c100.r18.e800.pth",
+    "config": "configs/simsiam.c100.yaml",
+    "knn_acc_5": 0.5841,
+    "knn_acc_10": 0.5969,
+    "knn_acc_20": 0.6054,
+    "knn_acc_50": 0.5946,
+    "knn_acc": 0.576
 }

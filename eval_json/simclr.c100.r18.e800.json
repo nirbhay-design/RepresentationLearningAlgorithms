@@ -1,10 +1,10 @@
 {
     "SEED": 42,
-    "num_classes": 10,
-    "data_name": "cifar10",
+    "num_classes": 100,
+    "data_name": "cifar100",
     "data_params": {
         "algo": "simclr",
-        "data_dir": "datasets/cifar10",
+        "data_dir": "datasets/cifar100",
         "batch_size": 512,
         "num_workers": 3,
         "image_size": 32
@@ -13,7 +13,7 @@
     "eval_every": 10,
     "n_epochs": 800,
     "n_epochs_mlp": 100,
-    "gpu_id": 0,
+    "gpu_id": 2,
     "opt": "SGD",
     "opt_params": {
         "lr": 0.5,
@@ -32,7 +32,7 @@
         "nesterov": true
     },
     "model_params": {
-        "model_name": "resnet50",
+        "model_name": "resnet18",
         "pretrained": false,
         "proj_dim": 128
     },
@@ -44,14 +44,11 @@
     },
     "distributed": false,
     "train_algo": "simclr",
-    "config": "configs/simclr.c10.yaml",
-    "model_save_path": "saved_models/simclr.c10.r50.e800.pth",
-    "ari": 0.3307900525655542,
-    "ami": 0.4505443160632562,
-    "fmi": 0.40174341668987223,
-    "knn_acc_5": 0.8525,
-    "knn_acc_10": 0.8595,
-    "knn_acc_20": 0.8573,
-    "knn_acc_50": 0.8525,
-    "knn_acc": 0.8477
+    "config": "configs/simclr.c100.yaml",
+    "model_save_path": "saved_models/simclr.c100.r18.e800.pth",
+    "knn_acc_5": 0.4526,
+    "knn_acc_10": 0.463,
+    "knn_acc_20": 0.4681,
+    "knn_acc_50": 0.4633,
+    "knn_acc": 0.4376
 }

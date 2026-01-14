@@ -3,22 +3,22 @@
     "num_classes": 10,
     "data_name": "cifar10",
     "data_params": {
-        "algo": "simsiam",
+        "algo": "byol",
         "data_dir": "datasets/cifar10",
         "batch_size": 512,
         "num_workers": 3,
         "image_size": 32
     },
-    "return_logs": true,
+    "return_logs": false,
     "eval_every": 10,
     "n_epochs": 800,
     "n_epochs_mlp": 100,
     "gpu_id": 6,
     "opt": "SGD",
     "opt_params": {
-        "lr": 0.1,
+        "lr": 0.4,
         "momentum": 0.9,
-        "weight_decay": 0.0001
+        "weight_decay": 0.0005
     },
     "schedular_params": {
         "T_max": 800,
@@ -32,22 +32,25 @@
     "model_params": {
         "model_name": "resnet50",
         "pretrained": false,
-        "proj_dim": 128,
-        "algo_type": "simsiam",
-        "pred_dim": 512
+        "proj_dim": 256,
+        "algo_type": "byol",
+        "byol_hidden": 4096
     },
+    "byol_pred_params": {
+        "in_features": 256,
+        "hidden_dim": 4096,
+        "out_features": 256
+    },
+    "ema_tau": 0.99,
     "mlp_type": "linear",
-    "loss": "simsiam",
+    "loss": "byol",
     "distributed": false,
-    "train_algo": "simsiam",
-    "model_save_path": "saved_models/simsiam.c10.r50.e800.pth",
-    "config": "configs/simsiam.c10.yaml",
-    "ari": 0.4551240762802083,
-    "ami": 0.5779700899797872,
-    "fmi": 0.5158720500444223,
-    "knn_acc_5": 0.8996,
-    "knn_acc_20": 0.9026,
-    "knn_acc_50": 0.9038,
-    "knn_acc": 0.8947,
-    "knn_acc_10": 0.9018
+    "train_algo": "byol",
+    "model_save_path": "saved_models/byol.c10.r50.e800.pth",
+    "config": "configs/byol.c10.yaml",
+    "knn_acc_5": 0.8448,
+    "knn_acc_10": 0.8529,
+    "knn_acc_20": 0.8506,
+    "knn_acc_50": 0.8475,
+    "knn_acc": 0.8322
 }
