@@ -96,7 +96,8 @@ class Network(nn.Module):
             )
             
         else:
-            self.proj = nn.Linear(self.classifier_infeatures, proj_dim)
+            # self.proj = nn.Linear(self.classifier_infeatures, proj_dim)
+            self.proj = BYOL_mlp(in_features = self.classifier_infeatures, hidden_dim = self.classifier_infeatures, out_features = proj_dim)
 
         self.algo_type = algo_type
 

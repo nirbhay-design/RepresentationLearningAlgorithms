@@ -37,6 +37,6 @@ mlp_type: "hidden"
 loss: simclr
 loss_params: 
   sim: 'cosine'
-  tau: 0.2
+  tau: 0.5
 distributed: False
 train_algo: simclr
