@@ -30,8 +30,8 @@ mlp_opt_params:
 model_params:
   model_name: 'resnet50' 
   pretrained: False 
-  proj_dim: 4096
-  barlow_hidden: 4096
+  proj_dim: 2048
+  barlow_hidden: 2048
 mlp_type: "hidden"
 loss: vicreg
 loss_params: 
