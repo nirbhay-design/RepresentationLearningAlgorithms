@@ -903,3 +903,48 @@ loss function: simclr
 [GPU6] epochs: [62/100] train_acc: 0.891 train_loss_sup: 0.435
 [GPU6] epochs: [63/100] train_acc: 0.890 train_loss_sup: 0.433
 [GPU6] epochs: [64/100] train_acc: 0.890 train_loss_sup: 0.431
+[GPU6] epochs: [65/100] train_acc: 0.890 train_loss_sup: 0.430
+[GPU6] epochs: [66/100] train_acc: 0.890 train_loss_sup: 0.429
+[GPU6] epochs: [67/100] train_acc: 0.890 train_loss_sup: 0.426
+[GPU6] epochs: [68/100] train_acc: 0.891 train_loss_sup: 0.424
+[GPU6] epochs: [69/100] train_acc: 0.891 train_loss_sup: 0.424
+[GPU6] epochs: [70/100] train_acc: 0.891 train_loss_sup: 0.423
+[GPU6] Test Accuracy at epoch: 70: 0.907
+[GPU6] epochs: [71/100] train_acc: 0.890 train_loss_sup: 0.420
+[GPU6] epochs: [72/100] train_acc: 0.891 train_loss_sup: 0.418
+[GPU6] epochs: [73/100] train_acc: 0.890 train_loss_sup: 0.418
+[GPU6] epochs: [74/100] train_acc: 0.891 train_loss_sup: 0.412
+[GPU6] epochs: [75/100] train_acc: 0.890 train_loss_sup: 0.416
+[GPU6] epochs: [76/100] train_acc: 0.889 train_loss_sup: 0.414
+[GPU6] epochs: [77/100] train_acc: 0.892 train_loss_sup: 0.411
+[GPU6] epochs: [78/100] train_acc: 0.890 train_loss_sup: 0.408
+[GPU6] epochs: [79/100] train_acc: 0.892 train_loss_sup: 0.405
+[GPU6] epochs: [80/100] train_acc: 0.894 train_loss_sup: 0.400
+[GPU6] Test Accuracy at epoch: 80: 0.908
+[GPU6] epochs: [81/100] train_acc: 0.892 train_loss_sup: 0.401
+[GPU6] epochs: [82/100] train_acc: 0.892 train_loss_sup: 0.403
+[GPU6] epochs: [83/100] train_acc: 0.892 train_loss_sup: 0.399
+[GPU6] epochs: [84/100] train_acc: 0.891 train_loss_sup: 0.400
+[GPU6] epochs: [85/100] train_acc: 0.894 train_loss_sup: 0.396
+[GPU6] epochs: [86/100] train_acc: 0.894 train_loss_sup: 0.394
+[GPU6] epochs: [87/100] train_acc: 0.893 train_loss_sup: 0.394
+[GPU6] epochs: [88/100] train_acc: 0.892 train_loss_sup: 0.396
+[GPU6] epochs: [89/100] train_acc: 0.893 train_loss_sup: 0.391
+[GPU6] epochs: [90/100] train_acc: 0.894 train_loss_sup: 0.390
+[GPU6] Test Accuracy at epoch: 90: 0.909
+[GPU6] epochs: [91/100] train_acc: 0.895 train_loss_sup: 0.388
+[GPU6] epochs: [92/100] train_acc: 0.893 train_loss_sup: 0.391
+[GPU6] epochs: [93/100] train_acc: 0.893 train_loss_sup: 0.387
+[GPU6] epochs: [94/100] train_acc: 0.893 train_loss_sup: 0.385
+[GPU6] epochs: [95/100] train_acc: 0.893 train_loss_sup: 0.386
+[GPU6] epochs: [96/100] train_acc: 0.895 train_loss_sup: 0.385
+[GPU6] epochs: [97/100] train_acc: 0.894 train_loss_sup: 0.385
+[GPU6] epochs: [98/100] train_acc: 0.894 train_loss_sup: 0.384
+[GPU6] epochs: [99/100] train_acc: 0.894 train_loss_sup: 0.385
+[GPU6] epochs: [100/100] train_acc: 0.893 train_loss_sup: 0.380
+[GPU6] Final Test Accuracy: 0.91
+Model weights saved
+<All keys matched successfully>
+knn evalution
+logistic regression evalution
+knn_acc: 0.905, log_reg_acc: 0.929
