@@ -130,8 +130,8 @@
 
 # nohup python train.py --config configs/vicreg.c10.yaml --gpu 1 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --opt LARS --save_path vicreg.c10.r18.e800.pth > logs/vicreg.c10.r18.e800.log &
 
-nohup python train.py --config configs/vicreg.c100.yaml --gpu 5 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --opt LARS --save_path vicreg.c100.r18.e800.pth > logs/vicreg.c100.r18.e800.log &
+# nohup python train.py --config configs/vicreg.c100.yaml --gpu 5 --model resnet18 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --opt LARS --save_path vicreg.c100.r18.e800.pth > logs/vicreg.c100.r18.e800.log &
 
 # nohup python train.py --config configs/vicreg.c10.yaml --gpu 6 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --opt LARS --save_path vicreg.c10.r50.e800.pth > logs/vicreg.c10.r50.e800.log &
 
-nohup python train.py --config configs/vicreg.c100.yaml --gpu 4 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --opt LARS --save_path vicreg.c100.r50.e800.pth > logs/vicreg.c100.r50.e800.log &
+# nohup python train.py --config configs/vicreg.c100.yaml --gpu 4 --model resnet50 --epochs 800 --epochs_lin 100 --linear_lr 0.1 --mlp_type linear --opt LARS --save_path vicreg.c100.r50.e800.pth > logs/vicreg.c100.r50.e800.log &

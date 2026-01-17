@@ -13,7 +13,7 @@
     "eval_every": 10,
     "n_epochs": 800,
     "n_epochs_mlp": 100,
-    "gpu_id": 2,
+    "gpu_id": 5,
     "opt": "SGD",
     "opt_params": {
         "lr": 0.5,
@@ -40,15 +40,15 @@
     "loss": "simclr",
     "loss_params": {
         "sim": "cosine",
-        "tau": 0.2
+        "tau": 0.5
     },
     "distributed": false,
     "train_algo": "simclr",
     "config": "configs/simclr.c10.yaml",
     "model_save_path": "saved_models/simclr.c10.r18.e800.pth",
-    "knn_acc_5": 0.8402,
-    "knn_acc_10": 0.8432,
-    "knn_acc_20": 0.8427,
-    "knn_acc_50": 0.8398,
-    "knn_acc": 0.8339
+    "knn_acc_5": 0.8985,
+    "knn_acc_10": 0.8994,
+    "knn_acc_20": 0.8992,
+    "knn_acc_50": 0.9008,
+    "knn_acc": 0.8949
 }
